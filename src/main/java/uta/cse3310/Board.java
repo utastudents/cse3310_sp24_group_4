@@ -1,4 +1,5 @@
 package uta.cse3310;
+import java.util.List;
 
 public class Board {
  private char[][] board;
