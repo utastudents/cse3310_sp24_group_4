@@ -24,13 +24,15 @@ import java.time.Instant;
 import java.time.Duration;
 
 public class Lobby {
-    private String[] playerNames;
-    private String host;
+    public String[] playerNames;
+    public String host;
     private String color;
-    private int playerNumber;
+    private float density;
+    private int randomness;
+    private int playerCount;
     
     // Game can be started once number of players is greater than 2
-    public void gameStart(int playerNumber) {
+    public void gameStart(int playerCount) {
         // Allows the host to start the game whenever amount of players is valid
     }
 
@@ -51,22 +53,27 @@ public class Lobby {
     }
 
     public void editValues() {
-        //Allows host to edit specific game values
+        // Allows host to edit specific game values
     }
 
     public String assignColor(playerNames) {
-        //Allows players to select their desired color choice
+        // Allows players to select their desired color choice
     }
 
     public String createName(input) {
-        //Players are given the choice of creating their in game name
+        // Players are given the choice of creating their in game name
     }
 
-    public boolean checkNumPlyers(playerNames) {
-        //returns true or false to see the number of players in the current lobby
+    public boolean checkPlayerCount(playerNames) {
+        // returns true or false to see the number of players in the current lobby
     }
 
+<<<<<<< HEAD
     public boolean checkUniqueName(playerNames) {
         //making sure that two players do not have the same username
+=======
+    boolean checkUniqueName(playerNames) {
+        // making sure that two players do not have the same username
+>>>>>>> f6998afa544ea2e76f3c7ec559767ba54bb9eb91
     }
 }
