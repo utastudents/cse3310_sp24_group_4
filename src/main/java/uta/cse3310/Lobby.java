@@ -68,12 +68,7 @@ public class Lobby {
         // returns true or false to see the number of players in the current lobby
     }
 
-<<<<<<< HEAD
     public boolean checkUniqueName(playerNames) {
         //making sure that two players do not have the same username
-=======
-    boolean checkUniqueName(playerNames) {
-        // making sure that two players do not have the same username
->>>>>>> f6998afa544ea2e76f3c7ec559767ba54bb9eb91
     }
 }
