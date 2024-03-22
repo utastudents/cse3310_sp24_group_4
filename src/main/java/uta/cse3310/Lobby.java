@@ -49,4 +49,24 @@ public class Lobby {
     public void kick(String playerNames, String host) {
         // Allows the host to kick another player in the lobby
     }
+
+    public void editValues() {
+        //Allows host to edit specific game values
+    }
+
+    public String assignColor(playerNames) {
+        //Allows players to select their desired color choice
+    }
+
+    public String createName(input) {
+        //Players are given the choice of creating their in game name
+    }
+
+    public boolean checkNumPlyers(playerNames) {
+        //returns true or false to see the number of players in the current lobby
+    }
+
+    boolean checkUniqueName(playerNames) {
+        //making sure that two players do not have the same username
+    }
 }
