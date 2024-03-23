@@ -36,7 +36,7 @@ public class Board {
         //changes the color
 
     }
-    public void createGrid(float density){
+    public void createBoard(float density){
         //creates the grid
 
     }
