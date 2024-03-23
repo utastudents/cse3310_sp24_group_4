@@ -26,7 +26,7 @@ import java.time.Duration;
 public class Lobby {
     public String[] playerNames;
     public String host;
-    private String color;
+    public String color;
     private float density;
     private int randomness;
     private int playerCount;
@@ -56,6 +56,10 @@ public class Lobby {
         // Allows host to edit specific game values
     }
 
+    public void displayHelp() {
+        // Gives player the option to view instructions/explanation of the game mechanics and functions
+    }
+
     public String assignColor(String playerNames) {
         // Allows players to select their desired color choice
     }
@@ -69,6 +73,6 @@ public class Lobby {
     }
 
     public boolean checkUniqueName(String playerNames) {
-        //making sure that two players do not have the same username
+        // making sure that two players do not have the same username
     }
 }
