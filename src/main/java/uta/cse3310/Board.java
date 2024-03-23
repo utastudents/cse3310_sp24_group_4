@@ -37,7 +37,7 @@ public class Board {
 
     }
     public void createBoard(float density){
-        //creates the grid
+        //creates the board
 
     }
     public void giveHint(){
