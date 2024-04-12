@@ -3,26 +3,6 @@
 
 package uta.cse3310;
 
-// All imports are taken from TicTacToe game (may or may not use them)
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.InetSocketAddress;
-import java.net.UnknownHostException;
-import java.nio.ByteBuffer;
-import java.util.Collections;
-
-// import org.java_websocket.WebSocket;
-// import org.java_websocket.drafts.Draft;
-// import org.java_websocket.drafts.Draft_6455;
-// import org.java_websocket.handshake.ClientHandshake;
-// import org.java_websocket.server.WebSocketServer;
-import java.util.Timer;
-import java.util.TimerTask;
-import java.util.Vector;
-import java.time.Instant;
-import java.time.Duration;
-
 public class Lobby {
     public String[] playerNames;
     public String host;
@@ -44,7 +24,7 @@ public class Lobby {
         // Allows players to leave the lobby whenever they like
     }
 
-    public void displayPlayers(String playerNames) {
+    public void displayPlayers(String[] playerNames) {
         // Shows all players currently in the lobby in a list
     }
 
