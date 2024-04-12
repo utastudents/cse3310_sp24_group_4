@@ -14,6 +14,15 @@ public class Lobby {
     // Game can be started once number of players is greater than 2
     public void gameStart(int playerCount) {
         // Allows the host to start the game whenever amount of players is valid
+        if(playerCount < 2) {
+            // game cannot be started
+        }
+        else if(playerCount >= 2 || playerCount <= 4) {
+            // game has option to be started
+        }
+        else if(playerCount > 4) {
+            // Player after the 4th joins is moved into another lobby
+        }
     }
 
     public void join() {
@@ -26,6 +35,9 @@ public class Lobby {
 
     public void displayPlayers(String[] playerNames) {
         // Shows all players currently in the lobby in a list
+        for(int i = 0; i < 4; i++) {
+            System.out.println(playerNames[i]);
+        }
     }
 
     public void kick(String playerNames, String host) {
