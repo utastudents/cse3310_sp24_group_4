@@ -7,7 +7,7 @@ public class LobbyTest extends TestCase {
         super(testName);
     }
 
-    public void testGameStart() {
+    public void testCreateGame() {
         Lobby L = new Lobby();
         // Tests when game attempts to start with 1 player in lobby
         L.gameStart(1);
@@ -19,7 +19,7 @@ public class LobbyTest extends TestCase {
         L.gameStart(5);
     }
 
-    public void testDisplayPlayers() {
+    public void testDisplayLobby() {
         String[] names = {"James", "Bob123", "Dave_0"};
         Lobby L = new Lobby();
 
