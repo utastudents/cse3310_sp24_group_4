@@ -59,6 +59,9 @@ import java.time.Duration;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import org.java_websocket.server.WebSocketServer;
+import java.net.InetSocketAddress;
+import java.util.Collections;
 
 public class App extends WebSocketServer {
 
@@ -81,9 +84,10 @@ public class App extends WebSocketServer {
   public App(InetSocketAddress address) {
     super(address);
   }
-
+  private Messaging messaging;
   public App(int port, Draft_6455 draft) {
     super(new InetSocketAddress(port), Collections.<Draft>singletonList(draft));
+    messaging = new Messaging(this);
   }
 
   @Override

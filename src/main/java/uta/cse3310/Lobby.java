@@ -62,17 +62,21 @@ public class Lobby {
 
     public String assignColor(String playerNames) {
         // Allows players to select their desired color choice
+        return "";
     }
 
     public String createName(String input) {
         // Players are given the choice of creating their in game name
+        return "";
     }
 
     public boolean checkPlayerCount(String playerNames) {
         // returns true or false to see the number of players in the current lobby
+        return true;
     }
 
     public boolean checkUniqueName(String playerNames) {
         // making sure that two players do not have the same username
+        return true;
     }
 }

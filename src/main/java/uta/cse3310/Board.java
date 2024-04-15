@@ -22,15 +22,15 @@ public class Board {
     
     public boolean checkWin(){
         // checks win and returns true or false
-
+        return true;
     }
     public boolean checkWinWord(String word){
         // checks the winning word and returns true or false
-
+        return true;
     }
     public boolean checkDupe(String word){
         //checks if word is duplicate or not
-
+        return true;
     }
     public void changeColor(String color){
         //changes the color

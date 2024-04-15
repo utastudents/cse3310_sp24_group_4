@@ -1,0 +1,23 @@
+
+.chat {
+    position: fixed;
+    bottom: 5%;
+    right: 5%;
+    width: 30%;
+    max-width: 400px;
+    height: 40%;
+    max-height: 400px;
+    border: 1px solid #ccc;
+    padding: 2%;
+    border-radius: 5px;
+    overflow: hidden;
+}
+
+#chatBox {
+    height: 80%;
+    overflow-y: scroll;
+    border-bottom: 1px solid #ddd;
+    padding: 2%;
+}
+
+
