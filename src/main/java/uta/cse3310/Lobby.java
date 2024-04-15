@@ -3,76 +3,53 @@
 
 package uta.cse3310;
 
-// All imports are taken from TicTacToe game (may or may not use them)
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.InetSocketAddress;
-import java.net.UnknownHostException;
-import java.nio.ByteBuffer;
-import java.util.Collections;
-
-// import org.java_websocket.WebSocket;
-// import org.java_websocket.drafts.Draft;
-// import org.java_websocket.drafts.Draft_6455;
-// import org.java_websocket.handshake.ClientHandshake;
-// import org.java_websocket.server.WebSocketServer;
-import java.util.Timer;
-import java.util.TimerTask;
-import java.util.Vector;
-import java.time.Instant;
-import java.time.Duration;
+import java.util.ArrayList;
 
 public class Lobby {
+    private ArrayList<GameRoom> rooms = new ArrayList<GameRoom>();
+    public PlayerType players;
     public String[] playerNames;
-    public String host;
-    public String color;
-    private float density;
-    private int randomness;
-    private int playerCount;
-    
-    // Game can be started once number of players is greater than 2
-    public void gameStart(int playerCount) {
-        // Allows the host to start the game whenever amount of players is valid
+    public int numOfPlayers;
+    public Score score;
+
+    public void createGame()
+    {
+        // Creates a game lobby where players can join
+        GameRoom GR = null;
+        GR = new GameRoom(score);
+        GR.GameId += 1;
+        // Add the first player
+        GR.PlayerNum = PlayerType.ONE;
+        GR.playerCount = 1;
+        rooms.add(GR);
+        System.out.println(" creating a new Game Room");
     }
 
-    public void join() {
-        // Allows players to join the lobby
-    }
-    
-    public void leave() {
-        // Allows players to leave the lobby whenever they like
-    }
-
-    public void displayPlayers(String playerNames) {
+    public void displayLobby(String[] playerNames)
+    {
         // Shows all players currently in the lobby in a list
+        for(String s: playerNames) {
+            System.out.println(s);
+        }
     }
 
-    public void kick(String playerNames, String host) {
-        // Allows the host to kick another player in the lobby
-    }
-
-    public void editValues() {
-        // Allows host to edit specific game values
-    }
-
-    public void displayHelp() {
+    public void displayHelp()
+    {
         // Gives player the option to view instructions/explanation of the game mechanics and functions
     }
 
-    public String assignColor(String playerNames) {
-        // Allows players to select their desired color choice
-    }
-
-    public String createName(String input) {
+    public String createName(String input)
+    {
         // Players are given the choice of creating their in game name
+        // (should be the first thing they are shown/allowed to do)
     }
 
-    public boolean checkPlayerCount(String playerNames) {
-        // returns true or false to see the number of players in the current lobby
-    }
-
-    public boolean checkUniqueName(String playerNames) {
+    public boolean checkUniqueName(String playerNames)
+    {
         // making sure that two players do not have the same username
+    }
+
+    public void Update(UserEvent U) {
+
     }
 }
