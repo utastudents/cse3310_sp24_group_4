@@ -2,9 +2,11 @@ package uta.cse3310;
 // User events are sent from the webpage to the server
 
 public class UserEvent {
-    int GameId; // the game ID on the server
-    PlayerType PlayerIdx; // either an XPLAYER or an OPLAYER
-    int Button; // button number from 0 to 8
+    public int GameId; // the game ID of game room
+    public PlayerType PlayerIdx; // either 1, 2, 3, 4, or none
+    public int Button;
+    public int playerCount;
+    public int numOfPlayers;
 
     UserEvent() {
 
