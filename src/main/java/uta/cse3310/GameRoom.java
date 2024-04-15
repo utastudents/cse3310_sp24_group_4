@@ -1,18 +1,18 @@
 package uta.cse3310;
 
 public class GameRoom {
-    Player PlayerNum;
+    PlayerType PlayerNum;
     public String host; // Assume player one is always host as they create a game
     public String[] color; // 4 Colors to choose frm
-    public Statistics Stats;
-    public int GameId;
-    private float density;
-    private int randomness;
-    private int playerCount;
+    public int GameId = 0;
+    public Score score;
+    public int playerCount = 0;
+    public float density;
+    public int randomness;
 
-    public GameRoom(Statistics s)
+    public GameRoom(Score s)
     {
-        Stats = s;
+        score = s;
     }
 
     public void leave() {
@@ -25,6 +25,7 @@ public class GameRoom {
 
     public String assignColor(String playerNames) {
         // Allows players to select their desired color choice
+        return null;
     }
 
     public void editValues() {
@@ -36,10 +37,6 @@ public class GameRoom {
         for(String s: playerNames) {
             System.out.println(s);
         }
-    }
-
-    public boolean checkPlayerCount(String playerNames) {
-        // returns true or false to see the number of players in the current lobby
     }
 
     // Game can be started once number of players is greater than 2
