@@ -1,9 +1,18 @@
 package uta.cse3310;
 
 public class GameRoom {
-    public GameRoom
-    {
+    Player PlayerNum;
+    public String host; // Assume player one is always host as they create a game
+    public String[] color; // 4 Colors to choose frm
+    public Statistics Stats;
+    public int GameId;
+    private float density;
+    private int randomness;
+    private int playerCount;
 
+    public GameRoom(Statistics s)
+    {
+        Stats = s;
     }
 
     public void leave() {

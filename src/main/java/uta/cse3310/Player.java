@@ -7,5 +7,5 @@ package uta.cse3310;
 } */
 
 public enum Player {
-    ONE, TWO, THREE, FOUR
+    ONE, TWO, THREE, FOUR, NONE
 }

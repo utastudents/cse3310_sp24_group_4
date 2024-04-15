@@ -61,18 +61,14 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 public class App extends WebSocketServer {
+  // All server(s) currently underway on this server stored here
+  // private Vector<Lobby> Lobbies = new Vector<Lobby>();
+  Lobby lob = null;
 
-  // All games currently underway on this server are stored in
-  // the vector ActiveGames
-  private Vector<Game> ActiveGames = new Vector<Game>();
-
-  private int GameId = 1;
-
+  public int numOfPlayers = 1;
   private int connectionId = 0;
-
-  private Instant startTime;
-
-  private Statistics stats;
+  // private Instant startTime;
+  // private Statistics stats;
 
   public App(int port) {
     super(new InetSocketAddress(port));
@@ -95,29 +91,23 @@ public class App extends WebSocketServer {
 
     ServerEvent E = new ServerEvent();
 
-    // search for a game needing a player
-    Game G = null;
-    for (Game i : ActiveGames) {
-      if (i.Players == uta.cse3310.PlayerType.XPLAYER) {
-        G = i;
-        System.out.println("found a match");
-      }
+    // Search for an open lobby
+    if(lob != null && numOfPlayers < 20) {
+      lob.numOfPlayers = numOfPlayers;
+      numOfPlayers++;
+      System.out.println("Found a Lobby.");
     }
-
-    // No matches ? Create a new Game.
-    if (G == null) {
-      G = new Game(stats);
-      G.GameId = GameId;
-      GameId++;
+    // No matches? Create a new Lobby.
+    else if (lob == null) {
+      lob = new Lobby();
+      lob.numOfPlayers = numOfPlayers;
+      numOfPlayers++;
       // Add the first player
-      G.Players = PlayerType.XPLAYER;
-      ActiveGames.add(G);
-      System.out.println(" creating a new Game");
-    } else {
-      // join an existing game
-      System.out.println(" not a new game");
-      G.Players = PlayerType.OPLAYER;
-      G.StartGame();
+      System.out.println("Creating a new Lobby.");
+    } 
+    else {
+      // Allow for extra player(s) to be moved.
+      System.out.println("Lobby full.");
     }
 
     // create an event to go to only the new player
@@ -202,7 +192,7 @@ public class App extends WebSocketServer {
   @Override
   public void onStart() {
     setConnectionLostTimeout(0);
-    stats = new Statistics();
+    // stats = new Statistics();
     startTime = Instant.now();
   }
 
