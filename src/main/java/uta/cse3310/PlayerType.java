@@ -1,8 +1,6 @@
 package uta.cse3310;
 
-// A player can be an X or an O
-
+// Player determined by in lobby or order of which they join game room.
 public enum PlayerType {
-    NOPLAYER, XPLAYER, OPLAYER
+    ONE, TWO, THREE, FOUR, NONE
 }
- 
