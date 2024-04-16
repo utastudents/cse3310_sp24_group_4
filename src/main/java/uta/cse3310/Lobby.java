@@ -10,6 +10,7 @@ public class Lobby {
     public PlayerType players;
     public String[] playerNames;
     public int numOfPlayers;
+    public int playerId;
     public Score score;
 
     public void createGame()
@@ -25,11 +26,17 @@ public class Lobby {
         System.out.println(" creating a new Game Room");
     }
 
-    public void displayLobby(String[] playerNames)
+    public String displayLobby()
     {
         // Shows all players currently in the lobby in a list
-        for(String s: playerNames) {
+
+        // Testing purposes
+        /* for(String s: playerNames) {
             System.out.println(s);
+        } */
+
+        for(String name : playerNames) {
+            return name;
         }
     }
 
@@ -54,11 +61,26 @@ public class Lobby {
         // returns true or false to see the number of players in the current lobby
         return true;
         // (should be the first thing they are shown/allowed to do)
+        if(checkUniqueName(input) == true) {
+            playerNames[playerId] = input;
+            return "Valid username.";
+        }
+        else {
+            return "Username taken.";
+        } 
     }
 
-    public boolean checkUniqueName(String playerNames)
+    public boolean checkUniqueName(String input)
     {
         // making sure that two players do not have the same username
+        for(String s : playerNames) {
+            if(s.equals(input)) {
+                System.out.println("Name taken."); // Testing purposes
+                return false;
+            }
+        }
+        // after every name tested, username can be accepted since no match found
+        System.out.println("Name available."); // Testing purposes
         return true;
     }
 
