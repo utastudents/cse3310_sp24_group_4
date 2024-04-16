@@ -1,18 +1,35 @@
 package uta.cse3310;
 
+import junit.framework.Test;
 import junit.framework.TestCase;
+import junit.framework.TestSuite;
 
 public class LobbyTest extends TestCase
 {
-    public LobbyTest(String testName)
-    {
+    /**
+     * Create the test case
+     *
+     * @param testName name of the test case
+     */
+    public LobbyTest(String testName) {
         super(testName);
     }
 
+    /**
+     * @return the suite of tests being tested
+     */
+    public static Test suite() {
+        return new TestSuite(GameUnitTest.class);
+    }
+
+    @Test
     public void testCreateGame()
     {
         Lobby L = new Lobby();
         
+        L.createGame();
+
+        assertNotNull(L.rooms);
     }
 
     public void testDisplayLobby()
@@ -25,28 +42,23 @@ public class LobbyTest extends TestCase
         L.displayLobby();
     }
 
-    public void testNameCreation() {
+    public void testNameCreation() 
+    {
         String[] names = {"Dan", "xx_WordSearchGamer", "Curious George", "123_name"};
         Lobby L = new Lobby();
 
         L.playerNames = names;
 
         // Case 1: Same username
-        L.checkUniqueName("Dan");
-        L.checkUniqueName("Curious George");
-        L.createName("Dan");
-        L.createName("Curious George");
+        assertFalse(L.checkUniqueName("Dan"));
+        assertFalse(L.checkUniqueName("Curious George"));;
 
         // Case 2: Same username, different capitalizations
-        L.checkUniqueName("XX_WordsearchGamer");
-        L.checkUniqueName("123_NAME");
-        L.createName("XX_WordsearchGamer");
-        L.createName("123_NAME");
+        assertTrue(L.checkUniqueName("XX_WordsearchGamer"));
+        assertTrue(L.checkUniqueName("123_NAME"));
 
         // Case 3: Different username
-        L.checkUniqueName("Candy0");
-        L.checkUniqueName("HandsomeSquidward");
-        L.createName("Candy0");
-        L.createName("HandsomeSquidward");
+        assertTrue(L.checkUniqueName("Candy0"));
+        assertTrue(L.checkUniqueName("HandsomeSquidward"));
     }
 }
