@@ -51,15 +51,6 @@ public class Lobby {
     }
 
     public String createName(String input) {
-    public String createName(String input)
-    {
-        // Players are given the choice of creating their in game name
-        return "";
-    }
-
-    public boolean checkPlayerCount(String playerNames) {
-        // returns true or false to see the number of players in the current lobby
-        return true;
         // (should be the first thing they are shown/allowed to do)
         if(checkUniqueName(input) == true) {
             playerNames[playerId] = input;
