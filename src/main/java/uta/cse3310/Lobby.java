@@ -6,12 +6,17 @@ package uta.cse3310;
 import java.util.ArrayList;
 
 public class Lobby {
-    private ArrayList<GameRoom> rooms = new ArrayList<GameRoom>();
+    public ArrayList<GameRoom> rooms = new ArrayList<GameRoom>();
     public PlayerType players;
     public String[] playerNames;
     public int numOfPlayers;
     public int playerId;
     public Score score;
+
+    public Lobby()
+    {
+
+    }
 
     public void createGame()
     {
@@ -31,13 +36,15 @@ public class Lobby {
         // Shows all players currently in the lobby in a list
 
         // Testing purposes
-        /* for(String s: playerNames) {
+        for(String s: playerNames) {
             System.out.println(s);
+        }
+
+        /* for(String name : playerNames) {
+            return name;
         } */
 
-        for(String name : playerNames) {
-            return name;
-        }
+        return null;
     }
 
     public void displayHelp()
