@@ -22,7 +22,6 @@ public class LobbyTest extends TestCase
         return new TestSuite(GameUnitTest.class);
     }
 
-    @Test
     public void testCreateGame()
     {
         Lobby L = new Lobby();
