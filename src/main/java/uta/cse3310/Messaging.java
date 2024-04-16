@@ -5,7 +5,7 @@ import org.java_websocket.WebSocket;
 import com.google.gson.Gson;
 
 public class Messaging {
-    private String msgHistory;
+    private String[] msgHistory;
     public String msg;
     private String[] filter = {"test1", "test2"};
     private App webSocketServer;

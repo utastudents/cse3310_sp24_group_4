@@ -38,11 +38,7 @@
 
 package uta.cse3310;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.net.InetSocketAddress;
-import java.net.UnknownHostException;
 import java.nio.ByteBuffer;
 import java.util.Collections;
 
@@ -51,11 +47,6 @@ import org.java_websocket.drafts.Draft;
 import org.java_websocket.drafts.Draft_6455;
 import org.java_websocket.handshake.ClientHandshake;
 import org.java_websocket.server.WebSocketServer;
-import java.util.Timer;
-import java.util.TimerTask;
-import java.util.Vector;
-import java.time.Instant;
-import java.time.Duration;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -64,18 +55,14 @@ import java.net.InetSocketAddress;
 import java.util.Collections;
 
 public class App extends WebSocketServer {
+  // All server(s) currently underway on this server stored here
+  // private Vector<Lobby> Lobbies = new Vector<Lobby>();
+  Lobby lob = null;
 
-  // All games currently underway on this server are stored in
-  // the vector ActiveGames
-  private Vector<Game> ActiveGames = new Vector<Game>();
-
-  private int GameId = 1;
-
+  public int numOfPlayers = 1;
   private int connectionId = 0;
-
-  private Instant startTime;
-
-  private Statistics stats;
+  // private Instant startTime;
+  // private Statistics stats;
 
   public App(int port) {
     super(new InetSocketAddress(port));
@@ -99,56 +86,50 @@ public class App extends WebSocketServer {
 
     ServerEvent E = new ServerEvent();
 
-    // search for a game needing a player
-    Game G = null;
-    for (Game i : ActiveGames) {
-      if (i.Players == uta.cse3310.PlayerType.XPLAYER) {
-        G = i;
-        System.out.println("found a match");
-      }
+    // Search for an open lobby
+    if(lob != null && numOfPlayers < 20) {
+      lob.numOfPlayers = numOfPlayers;
+      numOfPlayers++;
+      System.out.println("Found a Lobby.");
     }
-
-    // No matches ? Create a new Game.
-    if (G == null) {
-      G = new Game(stats);
-      G.GameId = GameId;
-      GameId++;
+    // No matches? Create a new Lobby.
+    else if (lob == null) {
+      lob = new Lobby();
+      lob.numOfPlayers = numOfPlayers;
+      numOfPlayers++;
       // Add the first player
-      G.Players = PlayerType.XPLAYER;
-      ActiveGames.add(G);
-      System.out.println(" creating a new Game");
-    } else {
-      // join an existing game
-      System.out.println(" not a new game");
-      G.Players = PlayerType.OPLAYER;
-      G.StartGame();
+      System.out.println("Creating a new Lobby.");
+    }
+    else {
+      // Since there can be 5 concurrent games with 4 people max, lobby goes up to 20 players.
+      System.out.println("Lobby full.");
     }
 
     // create an event to go to only the new player
-    E.YouAre = G.Players;
-    E.GameId = G.GameId;
+    E.YouAre = lob.players;
+    // E.GameId = G.GameId;
 
     // allows the websocket to give us the Game when a message arrives..
     // it stores a pointer to G, and will give that pointer back to us
     // when we ask for it
-    conn.setAttachment(G);
+    conn.setAttachment(lob);
 
     Gson gson = new Gson();
 
     // Note only send to the single connection
     String jsonString = gson.toJson(E);
     conn.send(jsonString);
-    System.out
+    /* System.out
         .println("> " + Duration.between(startTime, Instant.now()).toMillis() + " " + connectionId + " "
-            + escape(jsonString));
+            + escape(jsonString)); */
 
     // Update the running time
-    stats.setRunningTime(Duration.between(startTime, Instant.now()).toSeconds());
+    // stats.setRunningTime(Duration.between(startTime, Instant.now()).toSeconds());
 
     // The state of the game has changed, so lets send it to everyone
-    jsonString = gson.toJson(G);
-    System.out
-        .println("< " + Duration.between(startTime, Instant.now()).toMillis() + " " + "*" + " " + escape(jsonString));
+    jsonString = gson.toJson(lob);
+    /* System.out
+        .println("< " + Duration.between(startTime, Instant.now()).toMillis() + " " + "*" + " " + escape(jsonString)); */
     broadcast(jsonString);
 
   }
@@ -157,14 +138,14 @@ public class App extends WebSocketServer {
   public void onClose(WebSocket conn, int code, String reason, boolean remote) {
     System.out.println(conn + " has closed");
     // Retrieve the game tied to the websocket connection
-    Game G = conn.getAttachment();
-    G = null;
+    Lobby lob = conn.getAttachment();
+    lob = null;
   }
 
   @Override
   public void onMessage(WebSocket conn, String message) {
-    System.out
-        .println("< " + Duration.between(startTime, Instant.now()).toMillis() + " " + "-" + " " + escape(message));
+    /* System.out
+        .println("< " + Duration.between(startTime, Instant.now()).toMillis() + " " + "-" + " " + escape(message)); */
 
     // Bring in the data from the webpage
     // A UserEvent is all that is allowed at this point
@@ -173,19 +154,18 @@ public class App extends WebSocketServer {
     UserEvent U = gson.fromJson(message, UserEvent.class);
 
     // Update the running time
-    stats.setRunningTime(Duration.between(startTime, Instant.now()).toSeconds());
+    // stats.setRunningTime(Duration.between(startTime, Instant.now()).toSeconds());
 
     // Get our Game Object
-    Game G = conn.getAttachment();
-    G.Update(U);
+    Lobby lob = conn.getAttachment();
+    lob.Update(U);
 
-    // send out the game state every time
-    // to everyone
+    // send out the lobby state every time to everyone
     String jsonString;
-    jsonString = gson.toJson(G);
+    jsonString = gson.toJson(lob);
 
-    System.out
-        .println("> " + Duration.between(startTime, Instant.now()).toMillis() + " " + "*" + " " + escape(jsonString));
+    /* System.out
+        .println("> " + Duration.between(startTime, Instant.now()).toMillis() + " " + "*" + " " + escape(jsonString)); */
     broadcast(jsonString);
   }
 
@@ -198,16 +178,15 @@ public class App extends WebSocketServer {
   public void onError(WebSocket conn, Exception ex) {
     ex.printStackTrace();
     if (conn != null) {
-      // some errors like port binding failed may not be assignable to a specific
-      // websocket
+      // some errors like port binding failed may not be assignable to a specific websocket
     }
   }
 
   @Override
   public void onStart() {
     setConnectionLostTimeout(0);
-    stats = new Statistics();
-    startTime = Instant.now();
+    // stats = new Statistics();
+    // startTime = Instant.now();
   }
 
   private String escape(String S) {
@@ -226,20 +205,27 @@ public class App extends WebSocketServer {
   }
 
   public static void main(String[] args) {
+    String HttpPort = System.getenv("HTTP_PORT");
+    int port = 9080;
+    if (HttpPort!=null) {
+      port = Integer.valueOf(HttpPort);
+    }
 
     // Set up the http server
-    int port = 9080;
     HttpServer H = new HttpServer(port, "./html");
     H.start();
     System.out.println("http Server started on port: " + port);
 
     // create and start the websocket server
+    port = 9180;
+    String WSPort = System.getenv("WEBSOCKET_PORT");
+    if (WSPort!=null) {
+      port = Integer.valueOf(WSPort);
+    }
 
-    port = 9880;
     App A = new App(port);
     A.setReuseAddr(true);
     A.start();
     System.out.println("websocket Server started on port: " + port);
-
   }
 }
