@@ -60,6 +60,7 @@ public class App extends WebSocketServer {
   Lobby lob = null;
 
   public int numOfPlayers = 1;
+  public int playerId = 1;
   private int connectionId = 0;
   // private Instant startTime;
   // private Statistics stats;
@@ -90,6 +91,8 @@ public class App extends WebSocketServer {
     if(lob != null && numOfPlayers < 20) {
       lob.numOfPlayers = numOfPlayers;
       numOfPlayers++;
+      lob.playerId = playerId;
+      playerId++;
       System.out.println("Found a Lobby.");
     }
     // No matches? Create a new Lobby.
@@ -97,7 +100,8 @@ public class App extends WebSocketServer {
       lob = new Lobby();
       lob.numOfPlayers = numOfPlayers;
       numOfPlayers++;
-      // Add the first player
+      lob.playerId = playerId;
+      playerId++;
       System.out.println("Creating a new Lobby.");
     }
     else {

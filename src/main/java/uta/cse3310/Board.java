@@ -1,82 +1,27 @@
-/*package uta.cse3310;
-import java.util.List;
-
-public class Board {
-    private char[][] board;
-    private int size;
-    private String letters;
-    private String validWords;
-
-    public Board(int size) {
-        this.size = size;
-        this.board = new char[size][size];
-    }
-
-    public void placeWords(List<String> words) {
-        // Implementation to place words on the board
-    }
-
-    public void printBoard() {
-        // Implementation to print the board
-    }
-    
-    public boolean checkWin(){
-        // checks win and returns true or false
-        return true;
-    }
-    public boolean checkWinWord(String word){
-        // checks the winning word and returns true or false
-        return true;
-    }
-    public boolean checkDupe(String word){
-        //checks if word is duplicate or not
-        return true;
-    }
-    public void changeColor(String color){
-        //changes the color
-
-    }
-    public void createBoard(float density){
-        //creates the board
-
-    }
-    public void giveHint(){
-        //gives hint
-
-    }
-    public void displayList(){
-        //displays list
-
-    }
-    public void voteRestart(){
-        //allows the user to vote to restart game
-
-    }
-}*/
-
-
-
 package uta.cse3310;
 
-import java.util.List;
-import java.util.Random;
+import java.io.*;
+import java.util.*;
 
 public class Board {
     private char[][] board;
     private int size;
-    private Random random = new Random();
+    private Random random;
+    private List<String> wordBank;
 
-    public Board() {
+    // Default constructor with customizable filename and word count
+    public Board(String filename, int numberOfWords) {
         this.size = determineSizeFromEnv();
         this.board = new char[size][size];
+        this.random = new Random();
+        this.wordBank = new ArrayList<>();
+        loadWordsFromFile(filename, numberOfWords);
         initializeBoard();
     }
 
-    // Overloaded constructor for testing with a specific size
-    public Board(int size) {
-        this.size = size;
-        this.board = new char[this.size][this.size];
-        initializeBoard();
+    // Overload constructor for default settings
+    public Board() {
+        this("newWords.txt", 20);  // Default filename and number of words
     }
 
     private int determineSizeFromEnv() {
@@ -84,7 +29,7 @@ public class Board {
         try {
             return Integer.parseInt(gridSize);
         } catch (NumberFormatException e) {
-            return 10;  // Default size if environment variable is not set
+            return 10; // Default size if environment variable is not set
         }
     }
 
@@ -94,25 +39,83 @@ public class Board {
                 board[i][j] = '-';
             }
         }
+        placeWords(wordBank); // Place words after initializing board
+        fillEmptySpaces(); 
+    }
+
+    private void loadWordsFromFile(String filename, int numberOfWords) {
+        List<String> lines = new ArrayList<>();
+        try (BufferedReader reader = new BufferedReader(new FileReader(filename))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                lines.add(line.trim());
+            }
+            Collections.shuffle(lines); // Shuffle the lines to randomize
+            wordBank.addAll(lines.subList(0, Math.min(numberOfWords, lines.size()))); // Add only the required number of words
+        } catch (IOException e) {
+            System.err.println("Failed to load words from file: " + e.getMessage());
+        }
     }
 
     public void placeWords(List<String> words) {
         for (String word : words) {
+            List<int[]> possiblePositions = findPossiblePositions(word);
+            if (possiblePositions.isEmpty()) {
+                System.err.println("Cannot place word due to lack of space: " + word);
+                continue;
+            }
+
             boolean placed = false;
-            while (!placed) {
-                int row = random.nextInt(size);
-                int col = random.nextInt(size);
-                boolean horizontal = random.nextBoolean(); // Randomly decide orientation
+            Collections.shuffle(possiblePositions); // Randomize possible positions
+            for (int[] position : possiblePositions) {
+                int row = position[0];
+                int col = position[1];
+                boolean horizontal = position[2] == 1; // 1 for horizontal, 0 for vertical
+
                 if (canPlaceWord(word, row, col, horizontal)) {
                     for (int i = 0; i < word.length(); i++) {
                         board[horizontal ? row : row + i][horizontal ? col + i : col] = word.charAt(i);
                     }
                     placed = true;
+                    break;
+                }
+            }
+
+            if (!placed) {
+                System.err.println("Failed to place word after checking all positions: " + word);
+            }
+        }
+    }
+
+    private List<int[]> findPossiblePositions(String word) {
+        List<int[]> positions = new ArrayList<>();
+        for (int i = 0; i < size; i++) {
+            for (int j = 0; j < size; j++) {
+                if (canPlaceWord(word, i, j, true)) {  // Check horizontal possibility
+                    positions.add(new int[]{i, j, 1});
+                }
+                if (canPlaceWord(word, i, j, false)) {  // Check vertical possibility
+                    positions.add(new int[]{i, j, 0});
                 }
             }
         }
-        fillRandomLetters();
+        return positions;
     }
+
+    public List<String> getWordBank() {
+        return wordBank;
+    }
+
+    private void fillEmptySpaces() {
+        for (int i = 0; i < size; i++) {
+            for (int j = 0; j < size; j++) {
+                if (board[i][j] == '-') {
+                    board[i][j] = (char) ('A' + random.nextInt(26)); // Fill with a random letter
+                }
+            }
+        }
+    }
+    
 
     private boolean canPlaceWord(String word, int row, int col, boolean horizontal) {
         int deltaRow = horizontal ? 0 : 1;
@@ -123,16 +126,6 @@ public class Board {
             if (newRow >= size || newCol >= size || board[newRow][newCol] != '-') return false;
         }
         return true;
-    }
-
-    private void fillRandomLetters() {
-        for (int i = 0; i < size; i++) {
-            for (int j = 0; j < size; j++) {
-                if (board[i][j] == '-') {
-                    board[i][j] = (char) ('A' + random.nextInt(26));
-                }
-            }
-        }
     }
 
     public char[][] getBoard() {
@@ -147,36 +140,4 @@ public class Board {
             System.out.println();
         }
     }
-
-    public boolean checkWin(){
-        // checks win and returns true or false
-        return true;
-    }
-    public boolean checkWinWord(String word){
-        // checks the winning word and returns true or false
-        return true;
-    }
-    public boolean checkDupe(String word){
-        //checks if word is duplicate or not
-        return true;
-    }
-    public void changeColor(String color){
-        //changes the color
-
-    }
-    public void giveHint(){
-        //gives hint
-
-    }
-    public void displayList(){
-        //displays list
-
-    }
-    public void voteRestart(){
-        //allows the user to vote to restart game
-
-    }
 }
-
-
-
