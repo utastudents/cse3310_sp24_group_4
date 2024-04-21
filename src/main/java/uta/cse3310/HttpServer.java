@@ -10,6 +10,7 @@ import net.freeutils.httpserver.HTTPServer.FileContextHandler;
 import net.freeutils.httpserver.HTTPServer.Request;
 import net.freeutils.httpserver.HTTPServer.Response;
 import net.freeutils.httpserver.HTTPServer.VirtualHost;
+import java.util.List;
 
 // http server include is a GPL licensed package from
 //            http://www.freeutils.net/source/jlhttp/
@@ -30,6 +31,9 @@ public class HttpServer {
             File dir = new File(dirname);
             if (!dir.canRead())
                 throw new FileNotFoundException(dir.getAbsolutePath());
+
+            Board board = new Board();
+
             // set up server
             HTTPServer server = new HTTPServer(port);
             VirtualHost host = server.getVirtualHost(null); // default host
@@ -43,11 +47,64 @@ public class HttpServer {
                     return 0;
                 }
             });
+
+            // Add a context handler for serving the word grid
+            host.addContext("/wordgrid", new ContextHandler() {
+                public int serve(Request req, Response resp) throws IOException {
+                    char[][] grid = board.getBoard();
+                    String htmlGrid = convertGridToHTML(grid);
+                    resp.getHeaders().add("Content-Type", "text/html");
+                    resp.send(200, htmlGrid);
+                    return 0;
+                }
+            });
+
+            // Define endpoint to serve word bank HTML
+            host.addContext("/wordbank", new ContextHandler() {
+                public int serve(Request req, Response resp) throws IOException {
+                    List<String> placedWords = board.getPlacedWords();
+                    String htmlWordBank = convertWordBankToHTML(placedWords);
+                    resp.getHeaders().add("Content-Type", "text/html");
+                    resp.send(200, htmlWordBank);
+                    return 0;
+                }
+            });
+            
+
             server.start();
+
         } catch (Exception e) {
             System.err.println("error: " + e);
         }
 
     }
+    
+    private static String convertGridToHTML(char[][] grid) {
+        StringBuilder html = new StringBuilder("<table>");
+        for (char[] row : grid) {
+            html.append("<tr>");
+            for (char cell : row) {
+                html.append("<td>").append(cell).append("</td>");
+            }
+            html.append("</tr>");
+        }
+        html.append("</table>");
+        return html.toString();
+    }
+
+    private static String convertWordBankToHTML(List<String> placedWords) {
+        StringBuilder html = new StringBuilder("<div id=\"wordBank\" style=\"border: 1px solid black; padding: 10px; max-width: 200px;\">");
+        html.append("<h2>Word Bank</h2>\n");
+        html.append("<ul>\n");
+    
+        for (String word : placedWords) {
+            html.append("<li>").append(word).append("</li>\n");
+        }
+    
+        html.append("</ul>\n");
+        html.append("</div>\n");
+    
+        return html.toString();
+      }
 
 }
