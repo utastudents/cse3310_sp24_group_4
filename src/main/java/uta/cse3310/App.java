@@ -148,6 +148,11 @@ public class App extends WebSocketServer {
 
   @Override
   public void onMessage(WebSocket conn, String message) {
+    
+    if (message.startsWith("msg: ")) {
+        System.out.println("testt: " + message);
+    } else {
+        
     /* System.out
         .println("< " + Duration.between(startTime, Instant.now()).toMillis() + " " + "-" + " " + escape(message)); */
 
@@ -171,6 +176,8 @@ public class App extends WebSocketServer {
     /* System.out
         .println("> " + Duration.between(startTime, Instant.now()).toMillis() + " " + "*" + " " + escape(jsonString)); */
     broadcast(jsonString);
+    }
+    
   }
 
   @Override

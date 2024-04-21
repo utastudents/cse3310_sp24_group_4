@@ -41,6 +41,21 @@
 <label id="statMsg"></label>
 
 <script>
+    var connection = null;
+
+    var serverUrl;
+    serverUrl = "ws://" + window.location.hostname + ":9180";
+    // Create the connection with the server
+    connection = new WebSocket(serverUrl);
+
+    connection.onopen = function (evt) {
+        console.log("open");
+    }
+    connection.onclose = function (evt) {
+        console.log("close");
+        document.getElementById("topMessage").innerHTML = "Server Offline"
+    }
+
     document.addEventListener('DOMContentLoaded', function() {
         const chatBox = document.getElementById('chatBox');
         const userInput = document.getElementById('userInput');
@@ -53,12 +68,14 @@
         });
 
         function addMessage(message) {
+            connection.send("msg: " + message);
             const msgElement = document.createElement('div');
             msgElement.textContent = message;       //text content of the new div
             chatBox.appendChild(msgElement);        //appending the new message to message history
             chatBox.scrollTop = chatBox.scrollHeight;
 
             //call function in messaging for other player to see message
+            
         }
     });
 
