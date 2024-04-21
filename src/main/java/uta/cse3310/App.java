@@ -41,6 +41,7 @@ package uta.cse3310;
 import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
 import java.util.Collections;
+import java.util.List;
 
 import org.java_websocket.WebSocket;
 import org.java_websocket.drafts.Draft;
@@ -53,6 +54,7 @@ import com.google.gson.GsonBuilder;
 import org.java_websocket.server.WebSocketServer;
 import java.net.InetSocketAddress;
 import java.util.Collections;
+import static spark.Spark.*;
 
 public class App extends WebSocketServer {
   // All server(s) currently underway on this server stored here
@@ -231,5 +233,53 @@ public class App extends WebSocketServer {
     A.setReuseAddr(true);
     A.start();
     System.out.println("websocket Server started on port: " + port);
+
+    
+    // Define endpoint to generate and return word grid
+    get("/wordgrid", (req, res) -> {
+      Board board = new Board();
+      // Generate the word grid
+      char[][] grid = board.getBoard();
+      // Convert grid to HTML string
+      String htmlGrid = convertGridToHTML(grid);
+      return htmlGrid;
+    });  
+
+    get("/wordbank", (req, res) -> {
+      Board board = new Board();
+      List<String> placedWords = board.getPlacedWords();
+      String htmlWordBank = convertWordBankToHTML(placedWords);
+      return htmlWordBank;
+    });
   }
+
+  
+  private static String convertGridToHTML(char[][] grid) {
+    StringBuilder html = new StringBuilder("<table style=\"border-collapse: collapse; font-family: Arial, sans-serif;\">");
+    for (char[] row : grid) {
+        html.append("<tr>");
+        for (char cell : row) {
+            html.append("<td style=\"border: 1px solid black; width: 20px; height: 15px; text-align: center;\">").append(cell).append("</td>");
+        }
+        html.append("</tr>");
+    }
+    html.append("</table>");
+    return html.toString();
+  }
+
+  private static String convertWordBankToHTML(List<String> placedWords) {
+    StringBuilder html = new StringBuilder("<div id=\"wordBank\" style=\"border: 1px solid black; padding: 10px;max-width: 200px;\">");
+    html.append("<h2>Word Bank</h2>\n");
+    html.append("<ul>\n");
+
+    for (String word : placedWords) {
+        html.append("<li>").append(word).append("</li>\n");
+    }
+
+    html.append("</ul>\n");
+    html.append("</div>\n");
+
+    return html.toString();
+  }
+
 }
