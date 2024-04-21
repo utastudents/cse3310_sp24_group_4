@@ -71,27 +71,109 @@ for (let node of document.querySelectorAll("td")){
         }
     }
 }
+var connection = null;
 
-    document.addEventListener('DOMContentLoaded', function() {
-        const chatBox = document.getElementById('chatBox');
-        const userInput = document.getElementById('userInput');
-        const send = document.getElementById('send');
+var serverUrl;
+serverUrl = "ws://" + window.location.hostname + ":9180";
+// Create the connection with the server
+connection = new WebSocket(serverUrl);
 
-        send.addEventListener('click', function() {
-            const message = userInput.value.trim();
-            addMessage(message);
-            userInput.value = '';
-        });
+connection.onopen = function (evt) {
+    console.log("open");
+}
+//if close then set topMessage to = Server Offline
+connection.onclose = function (evt) {
+    console.log("close");
+    document.getElementById("topMessage").innerHTML = "Server Offline"
+}
 
-        function addMessage(message) {
-            const msgElement = document.createElement('div');
-            msgElement.textContent = message;       //text content of the new div
-            chatBox.appendChild(msgElement);        //appending the new message to message history
-            chatBox.scrollTop = chatBox.scrollHeight;
+document.addEventListener('DOMContentLoaded', function() {
+    const chatBox = document.getElementById('chatBox');
+    const userInput = document.getElementById('userInput');
+    const send = document.getElementById('send');
 
-            //call function in messaging for other player to see message
-        }
+    send.addEventListener('click', function() {
+        const message = userInput.value.trim();
+        addMessage(message);
+        userInput.value = '';
     });
+
+    function addMessage(message) {
+        connection.send("msg: "+ message);
+        /*
+        const msgElement = document.createElement('div');
+        msgElement.textContent = message;       //text content of the new div
+        chatBox.appendChild(msgElement);        //appending the new message to message history
+        chatBox.scrollTop = chatBox.scrollHeight;
+        */
+
+        //call function in messaging for other player to see message
+    }
+});
+
+connection.onmessage = function (evt) {
+    var msg;
+    msg = evt.data;
+    //console.log("Message received: " + msg);
+    if (msg.startsWith('"msg:')) {
+        // If yes, remove the prefix
+        msg = msg.substring(6, msg.length -1);
+        const msgElement = document.createElement('div');
+        msgElement.textContent = msg;       //text content of the new div
+        chatBox.appendChild(msgElement);        //appending the new message to message history
+        chatBox.scrollTop = chatBox.scrollHeight;
+    }
+
+    /*
+    
+    const msgElement = document.createElement('div');
+    msgElement.textContent = msg;       //text content of the new div
+    chatBox.appendChild(msgElement);        //appending the new message to message history
+    chatBox.scrollTop = chatBox.scrollHeight;
+    
+    //converting msg to obj
+    const obj = JSON.parse(msg);*/
+
+    /*
+    //if setting up players
+    if ('YouAre' in obj) {
+        if (obj.YouAre == "XPLAYER") {
+            idx = 0;
+        }
+        else {
+            idx = 1;
+        }
+
+        gameid = obj.GameId;
+    }
+    //check if our turn
+    else if ('CurrentTurn' in obj) {
+        // only pay attention to this game
+        if (gameid == obj.GameId) {
+            // button state to display values
+
+            document.getElementById("b1").value = ButtonStateToDisplay.get(obj.Button[0]);
+            document.getElementById("b2").value = ButtonStateToDisplay.get(obj.Button[1]);
+            document.getElementById("b3").value = ButtonStateToDisplay.get(obj.Button[2]);
+            document.getElementById("b4").value = ButtonStateToDisplay.get(obj.Button[3]);
+            document.getElementById("b5").value = ButtonStateToDisplay.get(obj.Button[4]);
+            document.getElementById("b6").value = ButtonStateToDisplay.get(obj.Button[5]);
+            document.getElementById("b7").value = ButtonStateToDisplay.get(obj.Button[6]);
+            document.getElementById("b8").value = ButtonStateToDisplay.get(obj.Button[7]);
+            document.getElementById("b9").value = ButtonStateToDisplay.get(obj.Button[8]);
+
+
+            // displaying MSG FROM BACKEND HERE
+            document.getElementById("topMessage").innerHTML = obj.Msg[idx];
+            document.getElementById("bottomMessage").innerHTML = "Number of games: " + obj.NumGames + "\nNumber of games in progress: " + obj.CurrentGames + "\nX wins: " + obj.XWon + "\nY wins: " + obj.YWon + "\nDraws: " + obj.Draw;
+        }
+    }
+    else if('CurrentGames' in obj) {
+        document.getElementById("bottomMessage").innerHTML = "Number of games: " + obj.NumGames + "\nNumber of games in progress: " + obj.CurrentGames + "\nX wins: " + obj.XWon + "\nY wins: " + obj.YWon + "\nDraws: " + obj.Draw;
+    }*/
+
+    
+}
 
     // gets the wordbank sent from server
     fetch('/wordbank')
