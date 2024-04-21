@@ -8,6 +8,7 @@ public class Board {
     private int size;
     private Random random;
     private List<String> wordBank;
+    private List<String> placedWords; // Store the words that are successfully placed on the board
 
     // Default constructor with customizable filename and word count
     public Board(String filename, int numberOfWords) {
@@ -15,6 +16,7 @@ public class Board {
         this.board = new char[size][size];
         this.random = new Random();
         this.wordBank = new ArrayList<>();
+        this.placedWords = new ArrayList<>();
         loadWordsFromFile(filename, numberOfWords);
         initializeBoard();
     }
@@ -22,7 +24,13 @@ public class Board {
     // Overload constructor for default settings
     public Board() {
         this("newWords.txt", 20);  // Default filename and number of words
+        //this.placedWords = new ArrayList<>();
     }
+
+    public List<String> getPlacedWords() {
+        return placedWords;
+    }
+
 
     private int determineSizeFromEnv() {
         String gridSize = System.getenv("TEST_GRID");
@@ -41,6 +49,7 @@ public class Board {
         }
         placeWords(wordBank); // Place words after initializing board
         fillEmptySpaces(); 
+        convertToUpperCase();
     }
 
     private void loadWordsFromFile(String filename, int numberOfWords) {
@@ -77,6 +86,7 @@ public class Board {
                         board[horizontal ? row : row + i][horizontal ? col + i : col] = word.charAt(i);
                     }
                     placed = true;
+                    placedWords.add(word.toUpperCase()); // Add the placed word to the list of placed words
                     break;
                 }
             }
@@ -84,6 +94,16 @@ public class Board {
             if (!placed) {
                 System.err.println("Failed to place word after checking all positions: " + word);
             }
+        }
+        printPlacedWords();
+    }
+
+   
+    public void printPlacedWords() {
+        List<String> placedWords = getPlacedWords();
+        System.out.println("Placed Words:");
+        for (String word : placedWords) {
+            System.out.println(word);
         }
     }
 
@@ -112,6 +132,14 @@ public class Board {
                 if (board[i][j] == '-') {
                     board[i][j] = (char) ('A' + random.nextInt(26)); // Fill with a random letter
                 }
+            }
+        }
+    }
+
+    private void convertToUpperCase() {
+        for (int i = 0; i < size; i++) {
+            for (int j = 0; j < size; j++) {
+                board[i][j] = Character.toUpperCase(board[i][j]);
             }
         }
     }

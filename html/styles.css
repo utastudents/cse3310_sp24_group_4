@@ -1,4 +1,5 @@
 
+
 .chat {
     position: fixed;
     bottom: 5%;
@@ -20,4 +21,38 @@
     padding: 2%;
 }
 
+.td {
+    cursor: pointer;
+    border: 1px solid black;
+    width: 20px;
+    height: 15px;
+    text-align: center;
+}
+.highlight-color-player1 {
+    background: rgba(204, 50, 50, 0.63); /* Highlight color for Player 1 */
+}
 
+.highlight-color-player2 {
+    background: rgba(40, 40, 165, 0.692); /* Highlight color for Player 2 */
+}
+
+
+.highlight-color-player3 {
+    background: lime; /* Highlight color for Player 3 */
+}
+
+
+.highlight-color-player4 {
+    background: yellow; /* Highlight color for Player 4 */
+}
+table{
+    border-collapse: collapse;
+}
+td.selected {
+    background: lime; /* Default highlight color */
+}
+h1 {
+    font-family: cursive;
+    color: blue;
+    text-align: center;
+}
