@@ -4,10 +4,40 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link rel="stylesheet" href="styles.css">
-        <script src="game.js"></script>
+        
     </head>
     <body>
-        <h1>World Search game</h1>
+        <header>
+            <h2 class = "title"><ion-icon name="dice-outline"></ion-icon>Word Search Game Lobby</h2>
+        </header>
+        <h1 id = "game-title" class = "hidden">World Search game</h1>
+        <div class ="lobby">
+            <div class = "players">
+                <h2>Players:</h2>
+            </div>
+            <button class ="btn">Join Lobby</button>
+            <button class ="btn1">Leave Lobby</button>
+            <button class ="btnStart">Start Game</button>
+        </div>
+        <div id="wordbank"></div>
+         <!-- Creates the Leaderboard-->
+         <div id="container">
+            <div class="leaderboard-row">
+                <div class="Player-name">LEADERBOARD</div><div class="score "></div>
+            </div>
+            <div class="row">
+                <div class="Player-name Player1">Player1</div><div class="words-found-name Player1">Words Found:</div><div class="words-found Player1">0</div><div class="score-name Player1">Points:</div><div class="score Player1">1</div>
+            </div>
+            <div class="row">
+                <div class="Player-name Player2">Player2</div><div class="words-found-name Player2">Words Found:</div><div class="words-found Player2">0</div><div class="score-name Player2">Points:</div><div class="score Player2">2</div>
+            </div>
+            <div class="row">
+                <div class="Player-name Player3">Player3</div><div class="words-found-name Player3">Words Found:</div><div class="words-found Player3">0</div><div class="score-name Player3">Points:</div><div class="score Player3">3</div>
+            </div>
+            <div class="row">
+                <div class="Player-name Player4">Player4</div><div class="words-found-name Player4">Words Found:</div><div class="words-found Player4">0</div><div class="score-name Player4">Points:</div><div class="score Player4">4</div>
+            </div>
+        </div>
         <div id="wordGrid"></div> 
 
         <div id="wordBank"></div>
@@ -21,5 +51,7 @@
 
         <label id="timeMsg"></label>
         <label id="statMsg"></label>
+
+        <script src="game.js"></script>
     </body>
 </html>

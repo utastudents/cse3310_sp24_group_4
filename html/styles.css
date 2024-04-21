@@ -1,5 +1,160 @@
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background-image: url(pic.jpg);
+    background-size: cover;
+    background-position: center;
+    z-index: -1;
+    }
+body.remove-background {
+    background-image: none;
+}
+header {
+    position: fixed;
+    font-size: 2em;
+    top: -20px;
+    left: -20px;
+    width: 100%;
+    padding: 20px 100px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    z-index: 99;
+}
+#game-title {
+    position: fixed;
+    text-align: center;
+    top: 0px;
+}
+.lobby {
+    position: absolute;
+    width: 500px;
+    height: 600px;
+    top: 175px;
+    left: 115px;
+    background: transparent;
+    border: 2px solid rgba(0, 0, 0, 0.5);
+    border-radius: 20px;
+    backdrop-filter:blur(20px);
+    box-shadow: 0 0 30px rgba(0,0, 0, .5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    }
 
+.lobby .players {
+    position: fixed;
+    font-size: 1.2em;
+    text-decoration: underline;
+    top: 0;
+    left: 20px;
+    display: flex;
+}
 
+.btn {
+    position: fixed;
+    bottom: -50px;
+    left: 30px;
+    font-size: 1.5em;
+    border: 3px double;
+    cursor: pointer;
+}
+
+.btn1 {
+    position: fixed;
+    bottom: -50px;
+    right: 30px;
+    font-size: 1.5em;
+    border: 3px double;
+    cursor: pointer;
+}
+.btnStart {
+    position: absolute;
+    padding: 5px 10px;
+    right: 5px;
+    top: 5px;
+    font-Size: 1.5em;
+    border: 3px double;
+    cursor: pointer;
+
+}
+.Player1 {
+    background-color: rgba(204, 50, 50, 0.63); /* row color for Player 1 */
+}
+.Player2 {
+    background-color: rgba(40, 40, 165, 0.692); /* row color for Player 2 */
+}
+.Player3 {
+    background-color: rgba(50, 218, 50, 0.671); /* row color for Player 3 */
+}
+.Player4 {
+    background-color: rgba(243, 243, 54, 0.658); /* row color for Player 4 */
+}
+.Player-name {
+    position: relative;
+    display: inline-block;
+    width: 20%;
+    line-height: 45px;
+}
+.score {
+    position: relative;
+    display: inline-block;
+    width: 20%;
+    line-height: 45px;
+}
+.score-name {
+    position: relative;
+    display: inline-block;
+    width: 20%;
+    line-height: 45px;
+    text-align: center;
+}
+#container {
+    position: relative;
+    align-items: center;
+    width: 500px;
+    height: auto;
+    margin-left: 50px;
+    float: right;
+    right: -300px;
+    top: -200px;
+    transform: scale(1);
+}
+.leaderboard-row {
+    position: relative;
+    display: block;
+    width: 100%;
+    height: 40px;
+    border: 1px solid #AFAFAF;
+}
+.row {
+    position: relative;
+    display: block;
+    width: 100%;
+    height: 40px;
+    border: 1px solid #AFAFAF;
+}
+.words-found-name {
+    position: relative;
+    display: inline-block;
+    width: 20%;
+    line-height: 45px;
+    text-align: center;
+}
+.words-found {
+    position: relative;
+    display: inline-block;
+    width: 20%;
+    line-height: 45px;
+}
+.hidden {
+    display: none;
+}
+.appear {
+    display: visible;
+}
 .chat {
     position: fixed;
     bottom: 5%;
@@ -50,9 +205,4 @@ table{
 }
 td.selected {
     background: lime; /* Default highlight color */
-}
-h1 {
-    font-family: cursive;
-    color: blue;
-    text-align: center;
 }
