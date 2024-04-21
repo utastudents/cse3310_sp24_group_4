@@ -37,7 +37,7 @@ public class Board {
         try {
             return Integer.parseInt(gridSize);
         } catch (NumberFormatException e) {
-            return 10; // Default size if environment variable is not set
+            return 20; // Default size if environment variable is not set
         }
     }
 
