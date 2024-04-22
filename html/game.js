@@ -16,6 +16,9 @@ const header = document.querySelector('header');
 const body = document.querySelector('body');
 const table = document.querySelector('table');
 const header2 = document.getElementById('game-title');
+const chatBox = document.querySelector('.chat');
+const wordGrid = document.getElementById('wordGrid');
+const wordBank = document.getElementById('wordBank');
     
 startGameBtn.addEventListener('click', () => {
     lobby.classList.add('hidden');
@@ -23,6 +26,9 @@ startGameBtn.addEventListener('click', () => {
     //table.classList.remove('hidden');
     body.classList.add('remove-background');
     header2.classList.remove('hidden');
+    chatBox.classList.remove('hidden');
+    wordGrid.classList.remove('hidden');
+    wordBank.classList.remove('hidden');
     //header2.classList.add('appear');
 });
 join.addEventListener('click', () => {
