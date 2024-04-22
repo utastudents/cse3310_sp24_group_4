@@ -63,6 +63,27 @@ header {
     cursor: pointer;
 }
 
+.tutorialBtn {
+    position: fixed;
+    bottom: -50px;
+    left: 190px; 
+    font-size: 1.5em;
+    border: 3px double;
+    cursor: pointer;
+}
+
+#instructions {
+    display: none;
+    position: absolute;
+    right: -240px; 
+    top: 80%; 
+    transform: translateY(-50%);
+    width: 200px; 
+    background-color: white; 
+    border: 2px solid black; 
+    padding: 10px; 
+}
+
 .btn1 {
     position: fixed;
     bottom: -50px;

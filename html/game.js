@@ -202,11 +202,11 @@ connection.onmessage = function (evt) {
 function toggleInstructions() {
     var instructions = document.getElementById("instructions");
     if (instructions.style.display === "none") {
-      instructions.style.display = "block";
-    } else {
-      instructions.style.display = "none";
-    }
-  }
+        instructions.style.display = "block";
+      } else {
+        instructions.style.display = "none";
+      }
+}
 
     // gets the wordbank sent from server
     fetch('/wordbank')
