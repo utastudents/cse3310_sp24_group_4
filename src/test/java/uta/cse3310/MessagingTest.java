@@ -33,8 +33,8 @@ public class MessagingTest extends TestCase
     {
         Messaging messaging = new Messaging(webSocketServer);
         
-        assertEquals(messaging.sendMsg("test1"), "Unfriendly Language");
-        assertEquals(messaging.sendMsg("Good"), "Successful");
+        assertEquals(messaging.sendMsg("msg: test1"), "Unfriendly Language");
+        assertEquals(messaging.sendMsg("msg: test"), "Successful");
 
         assertEquals("Sent", messaging.updateTextBox("message"));
     }
