@@ -27,6 +27,7 @@ header {
     position: fixed;
     text-align: center;
     top: 0px;
+    font-size: 2.5em;
 }
 .lobby {
     position: absolute;
@@ -118,7 +119,7 @@ header {
     height: auto;
     margin-left: 50px;
     float: right;
-    right: -300px;
+    right: -585px;
     top: -200px;
     transform: scale(1);
 }

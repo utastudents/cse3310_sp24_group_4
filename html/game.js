@@ -7,7 +7,7 @@ const highlightColors = [
                     ];
     // highlight color depends on player
     let currentPlayerIndex = 1;
-    
+
 const startGameBtn = document.querySelector('.btnStart');
 const join = document.querySelector('.btn');
 const leave = document.querySelector('.btn1');
@@ -20,10 +20,10 @@ const header2 = document.getElementById('game-title');
 startGameBtn.addEventListener('click', () => {
     lobby.classList.add('hidden');
     header.classList.add('hidden');
-    table.classList.remove('hidden');
+    //table.classList.remove('hidden');
     body.classList.add('remove-background');
     header2.classList.remove('hidden');
-    header2.classList.add('appear');
+    //header2.classList.add('appear');
 });
 join.addEventListener('click', () => {
     
