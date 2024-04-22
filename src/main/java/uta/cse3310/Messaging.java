@@ -16,9 +16,16 @@ public class Messaging {
 
     public String updateTextBox(String msg) {
         Gson gson = new Gson();
-        String jsonMessage = gson.toJson(msg);
 
-        webSocketServer.broadcast(jsonMessage);
+        if (msg == "*******") {
+            String jsonMessage = gson.toJson("msg: "+ msg);
+            //System.out.println("broadcasting: " + jsonMessage);
+            webSocketServer.broadcast(jsonMessage);
+        } else {
+            String jsonMessage = gson.toJson(msg);
+            //System.out.println("broadcasting: " + jsonMessage);
+            webSocketServer.broadcast(jsonMessage);
+        }
 
         return "Sent";
     }
@@ -26,8 +33,10 @@ public class Messaging {
     public String sendMsg(String input) {
         //when message is sent check in filter and do update so other person can see it
         //if bad word then dont update for it
+        //System.out.println(input);
         List<String> filterList = Arrays.asList(filter);
-        if (filterList.contains(input)) {
+        if (filterList.contains(input.substring(5, input.length()))) {
+            //System.out.println(input.substring(4, input.length()));
             updateTextBox("*******");
             return "Unfriendly Language";
         } 

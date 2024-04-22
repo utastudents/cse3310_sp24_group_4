@@ -74,10 +74,10 @@ public class App extends WebSocketServer {
   public App(InetSocketAddress address) {
     super(address);
   }
-  private Messaging messaging;
+  private static Messaging messaging;
   public App(int port, Draft_6455 draft) {
     super(new InetSocketAddress(port), Collections.<Draft>singletonList(draft));
-    messaging = new Messaging(this);
+    //messaging = new Messaging(this);
   }
 
   @Override
@@ -152,7 +152,8 @@ public class App extends WebSocketServer {
   public void onMessage(WebSocket conn, String message) {
     
     if (message.startsWith("msg: ")) {
-        System.out.println("testt: " + message);
+        //System.out.println("testt: " + message);
+        messaging.sendMsg(message);
     } else {
         
     /* System.out
@@ -236,10 +237,13 @@ public class App extends WebSocketServer {
       port = Integer.valueOf(WSPort);
     }
 
+    
     App A = new App(port);
     A.setReuseAddr(true);
     A.start();
     System.out.println("websocket Server started on port: " + port);
+
+    messaging = new Messaging(A);
 
     
     // Define endpoint to generate and return word grid
