@@ -144,6 +144,17 @@ header {
     top: -200px;
     transform: scale(1);
 }
+#wordGridContainer {
+    position: relative;
+    align-items: center;
+    width: 500px;
+    height: auto;
+    margin-left: 50px;
+    float: left;
+    right: -585px;
+    top: -200px;
+    transform: scale(1);
+}
 .leaderboard-row {
     position: relative;
     display: block;
