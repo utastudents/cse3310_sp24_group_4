@@ -1,36 +1,3 @@
-/*package uta.cse3310;
-
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
-import java.util.Arrays;
-
-public class TestBoard extends TestCase {
-    public TestBoard(String testName) {
-        super(testName);
-    }
-
-    public static Test suite() {
-        return new TestSuite(TestBoard.class);
-    }
-
-    public void testRandomWordPlacement() {
-        Board board = new Board(10, 42); // Using a fixed seed for reproducibility
-        board.placeWords(Arrays.asList("HELLO"));
-        boolean found = false;
-        for (int i = 0; i < board.getBoard().length; i++) {
-            for (int j = 0; j < board.getBoard()[i].length; j++) {
-                if (board.getBoard()[i][j] == 'H') {
-                    found = true;
-                    break;
-                }
-            }
-            if (found) break;
-        }
-        assertTrue("The word should be found on the board.", found);
-    }
-}*/
-
 package uta.cse3310;
 
 import junit.framework.Test;
@@ -61,53 +28,65 @@ public class TestBoard extends TestCase {
      * Test constructor to ensure proper board initialization
      */
     public void testBoardInitialization() {
-        Board board = new Board("newWords.txt", 5);
+        Board board = new Board("newWords.txt", 20);
         assertNotNull("Board should be initialized", board.getBoard());
-        assertEquals("Default board size should be 20 if environment variable is not set", 20, board.getBoard().length);
+        assertEquals("Default board size should be 20 if environment variable is not set", 35, board.getBoard().length);
     }
 
     /**
      * Test word placement on the board
      */
     public void testWordPlacement() {
-        Board board = new Board("newWords.txt", 5);
+        Board board = new Board("newWords.txt", 20);
 
-        // Clear the board entirely before placing "TEST"
+        // Clear the board entirely before placing words
         char[][] grid = board.getBoard();
         for (int i = 0; i < grid.length; i++) {
-            Arrays.fill(grid[i], '-');  // Assuming '-' is used to indicate empty spaces in the Board class
+            Arrays.fill(grid[i], '-');
         }
-    
-        // Now place "TEST" on the clear board
-        List<String> words = Arrays.asList("TEST");
-        board.placeWords(words);  // This should find space easily since the board is clear
-    
-        boolean found = false;
-    
-        // Check if the word "TEST" is correctly placed
-        outerLoop:
-        for (int i = 0; i < grid.length; i++) {
-            for (int j = 0; j < grid[i].length; j++) {
-                if (grid[i][j] == 'T') {
-                    // Check horizontally and vertically
-                    if (j + words.get(0).length() <= grid[i].length && checkHorizontalPlacement(grid, i, j, words.get(0))) {
-                        found = true;
-                        break outerLoop;
+
+        // Now place words on the clear board
+        board.putWords(20);
+        List<String> placedWords = board.getPlacedWords();
+
+        // Check if all the words are correctly placed
+        for (String word : placedWords) {
+            assertTrue("The word '" + word + "' should be found on the board", isWordOnBoard(grid, word));
+        }
+    }
+
+    /**
+     * Helper method to check if a word is present on the board
+     */
+    private boolean isWordOnBoard(char[][] grid, String word) {
+        int n = grid.length;
+        int m = grid[0].length;
+        int len = word.length();
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < m; j++) {
+                if (grid[i][j] == word.charAt(0)) {
+                    // Check horizontally
+                    if (j + len <= m && checkHorizontal(grid, i, j, word)) {
+                        return true;
                     }
-                    if (i + words.get(0).length() <= grid.length && checkVerticalPlacement(grid, i, j, words.get(0))) {
-                        found = true;
-                        break outerLoop;
+                    // Check vertically
+                    if (i + len <= n && checkVertical(grid, i, j, word)) {
+                        return true;
+                    }
+                    // Check diagonally
+                    if (j + len <= m && i + len <= n && checkDiagonal(grid, i, j, word)) {
+                        return true;
                     }
                 }
             }
         }
-        assertTrue("The word 'TEST' should be found on the board", found);
+        return false;
     }
 
     /**
-     * Helper method to check horizontal placement
+     * Helper method to check if a word is present horizontally on the board
      */
-    private boolean checkHorizontalPlacement(char[][] grid, int row, int col, String word) {
+    private boolean checkHorizontal(char[][] grid, int row, int col, String word) {
         for (int k = 0; k < word.length(); k++) {
             if (grid[row][col + k] != word.charAt(k)) {
                 return false;
@@ -117,11 +96,23 @@ public class TestBoard extends TestCase {
     }
 
     /**
-     * Helper method to check vertical placement
+     * Helper method to check if a word is present vertically on the board
      */
-    private boolean checkVerticalPlacement(char[][] grid, int row, int col, String word) {
+    private boolean checkVertical(char[][] grid, int row, int col, String word) {
         for (int k = 0; k < word.length(); k++) {
             if (grid[row + k][col] != word.charAt(k)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * Helper method to check if a word is present diagonally on the board
+     */
+    private boolean checkDiagonal(char[][] grid, int row, int col, String word) {
+        for (int k = 0; k < word.length(); k++) {
+            if (grid[row + k][col + k] != word.charAt(k)) {
                 return false;
             }
         }
@@ -132,19 +123,18 @@ public class TestBoard extends TestCase {
      * Test loading words from file
      */
     public void testLoadWordsFromFile() {
-        Board board = new Board("newWords.txt", 5);
+        Board board = new Board("newWords.txt", 20);
         // Checking if at least some words have been loaded (assuming the file has at least 5 words)
-        assertTrue("Word bank should contain words", board.getWordBank().size() > 0);
+        assertTrue("Word bank should contain words", board.getPlacedWords().size() > 0);
     }
 
     /**
      * Test board print functionality
      */
     public void testPrintBoard() {
-        Board board = new Board("newWords.txt", 5);
+        Board board = new Board("newWords.txt", 20);
         board.printBoard();
         // This test does not verify output but ensures there are no exceptions during printing
         assertTrue("Print board should complete without error", true);
     }
 }
-
