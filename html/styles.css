@@ -138,11 +138,14 @@ header {
     align-items: center;
     width: 500px;
     height: auto;
-    margin-left: 50px;
     float: right;
+    margin-left: 50px;
     right: -585px;
     top: -200px;
     transform: scale(1);
+}
+.leader {
+    right: -660px !important;
 }
 #wordGridContainer {
     position: relative;
@@ -187,6 +190,9 @@ header {
 }
 .appear {
     display: visible;
+}
+.scale {
+    transform: scale(0);
 }
 .chat {
     position: fixed;
@@ -238,4 +244,10 @@ table{
 }
 td.selected {
     background: lime; /* Default highlight color */
+}
+
+#wordGrid {
+    position: fixed;
+    left: 50px;
+    top: 100px;
 }

@@ -19,21 +19,22 @@ const header2 = document.getElementById('game-title');
 const chatBox = document.querySelector('.chat');
 const wordGrid = document.getElementById('wordGrid');
 const wordBank = document.getElementById('wordBank');
+const container = document.getElementById('container');
     
 startGameBtn.addEventListener('click', () => {
     lobby.classList.add('hidden');
     header.classList.add('hidden');
-    //table.classList.remove('hidden');
     body.classList.add('remove-background');
     header2.classList.remove('hidden');
     chatBox.classList.remove('hidden');
     wordGrid.classList.remove('hidden');
     wordBank.classList.remove('hidden');
-    //header2.classList.add('appear');
+    lobby.classList.add('scale');
+    container.classList.add('leader');
 });
 join.addEventListener('click', () => {
     
- });
+});
 leave.addEventListener('click', () => {
         
 });
