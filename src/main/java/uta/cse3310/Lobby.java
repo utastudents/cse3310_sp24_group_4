@@ -8,22 +8,24 @@ import java.util.ArrayList;
 public class Lobby {
     public ArrayList<GameRoom> rooms = new ArrayList<GameRoom>();
     public ArrayList<String> playerNames = new ArrayList<String>();
-    public PlayerType players;
-    // public String[] playerNames;
+    public ArrayList<Player> players = new ArrayList<Player>();
+    public PlayerType playerT;
     public int numOfPlayers;
     public int playerId;
+    public int lobbyId;
     public Score score;
+    public Leaderboard leaderboard;
 
-    public Lobby()
+    public Lobby(int lobbyId)
     {
-
+        this.lobbyId = lobbyId;
     }
 
     public void createGame()
     {
         // Creates a game lobby where players can join
         GameRoom GR = null;
-        GR = new GameRoom(score);
+        GR = new GameRoom(score, leaderboard);
         GR.GameId += 1;
         // Add the first player
         GR.PlayerNum = PlayerType.ONE;
@@ -32,19 +34,20 @@ public class Lobby {
         System.out.println("Creating a new Game Room");
     }
 
-    // roomId should be from 1-5 where the button to join will be dependent on the order of where it is on the list
+    // roomId should be from 0-4 where the button to join will be dependent on the order of where it is on the list
     // of rooms and will send the information to that room only
     public void joinRoom(int roomId) {
-        if(rooms[roomId] != null) {
-            rooms[roomId].playerCount += 1;
-            if(rooms[roomId].playerCount == 2) {
-                rooms[roomId].PlayerNum = PlayerType.TWO;
+        if(rooms.isEmpty() == false && (roomId >= 0 && roomId <= 4)) {
+            GameRoom targetRoom = rooms.get(roomId);
+            targetRoom.playerCount += 1;
+            if(targetRoom.playerCount == 2) {
+                targetRoom.PlayerNum = PlayerType.TWO;
             }
-            else if(rooms[roomId].playerCount == 3) {
-                rooms[roomId].PlayerNum = PlayerType.THREE;
+            else if(targetRoom.playerCount == 3) {
+                targetRoom.PlayerNum = PlayerType.THREE;
             }
-            else if(rooms[roomId].playerCount == 4) {
-                rooms[roomId].PlayerNum = PlayerType.FOUR;
+            else if(targetRoom.playerCount == 4) {
+                targetRoom.PlayerNum = PlayerType.FOUR;
             }
         }
     }
@@ -70,6 +73,8 @@ public class Lobby {
         // (should be the first thing they are shown/allowed to do)
         if(checkUniqueName(input) == true) {
             playerNames.add(input);
+            Player newPlayer = new Player("input", playerId);
+            players.add(newPlayer);
             return "Valid username.";
         }
         else {
