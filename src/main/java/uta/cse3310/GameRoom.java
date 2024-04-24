@@ -2,31 +2,60 @@ package uta.cse3310;
 
 public class GameRoom {
     PlayerType PlayerNum;
+    Player player;
     public String host; // Assume player one is always host as they create a game
     public String[] color; // 4 Colors to choose frm
-    public int GameId = 0;
-    public Score score;
+    public int GameId;
     public int playerCount = 0;
     public float density;
     public int randomness;
+    public Score score;
+    public Leaderboard leaderboard;
 
-    public GameRoom(Score s)
+    public GameRoom(Score s, Leaderboard l)
     {
         score = s;
+        leaderboard = l;
+
+        
     }
 
     public void leave() {
         // Allows players to leave the lobby whenever they like
         playerCount -= 1;
+        
     }
 
-    public void kick(String playerNames, String host) {
+    public void kick() {
         // Allows the host to kick another player in the lobby
         playerCount -= 1;
     }
 
-    public String assignColor(String playerNames) {
+    public String assignColor(String choice) {
         // Allows players to select their desired color choice
+        if(choice.equals("red")) {
+            // System.out.println("Player chose red");
+            player.color = "red";
+            return "red";
+        }
+        else if(choice.equals("blue")) {
+            // System.out.println("Player chose blue");
+            player.color = "blue";
+            return "blue";
+        }
+        else if(choice.equals("green")) {
+            // System.out.println("Player chose green");
+            player.color = "green";
+            return "green";
+        }
+        else if(choice.equals("yellow")) {
+            // System.out.println("Player chose yellow");
+            player.color = "yellow";
+            return "yellow";
+        }
+        // Testing purposes
+        System.out.println("Invalid color.");
+        
         return null;
     }
 
