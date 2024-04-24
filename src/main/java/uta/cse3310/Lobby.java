@@ -32,20 +32,33 @@ public class Lobby {
         System.out.println("Creating a new Game Room");
     }
 
-    public String displayLobby()
+    // roomId should be from 1-5 where the button to join will be dependent on the order of where it is on the list
+    // of rooms and will send the information to that room only
+    public void joinRoom(int roomId) {
+        if(rooms[roomId] != null) {
+            rooms[roomId].playerCount += 1;
+            if(rooms[roomId].playerCount == 2) {
+                rooms[roomId].PlayerNum = PlayerType.TWO;
+            }
+            else if(rooms[roomId].playerCount == 3) {
+                rooms[roomId].PlayerNum = PlayerType.THREE;
+            }
+            else if(rooms[roomId].playerCount == 4) {
+                rooms[roomId].PlayerNum = PlayerType.FOUR;
+            }
+        }
+    }
+
+    public ArrayList<String> displayLobby()
     {
-        // Shows all players currently in the lobby in a list
+        // Gives array list of all players currently in the lobby in a list for use
 
         // Testing purposes
         for(String s: playerNames) {
             System.out.println(s);
         }
 
-        /* for(String name : playerNames) {
-            return name;
-        } */
-
-        return null;
+        return playerNames;
     }
 
     public void displayHelp()
@@ -61,7 +74,7 @@ public class Lobby {
         }
         else {
             return "Username taken.";
-        } 
+        }
     }
 
     public boolean checkUniqueName(String input)
