@@ -8,6 +8,7 @@ public class Board {
     private int size;
     private Random random;
     private List<String> wordBank;
+    private int overlapCount = 0;  // Track the number of words that have overlapped
 
     public Board(String filename, int numberOfWords) {
         this.size = determineSizeFromEnv();
@@ -19,7 +20,7 @@ public class Board {
     }
 
     public Board() {
-        this("newWords.txt", 20);
+        this("newWords.txt", 35);
     }
 
     private int determineSizeFromEnv() {
@@ -37,7 +38,7 @@ public class Board {
                 board[i][j] = '-';
             }
         }
-        putWords(20);  // Place random words after initializing board
+        putWords(35);  // Place random words after initializing board
         fillEmptySpaces();
     }
 
@@ -59,35 +60,54 @@ public class Board {
         Collections.shuffle(wordBank);
         List<String> successfullyPlacedWords = new ArrayList<>();
         for (String word : wordBank) {
-            List<int[]> possiblePositions = findPossiblePositions(word);
-            if (!possiblePositions.isEmpty()) {
-                Collections.shuffle(possiblePositions);
-                int[] position = possiblePositions.get(0);
-                placeWord(word, position[0], position[1], position[2]);
-                successfullyPlacedWords.add(word);
+            if (overlapCount < 10) {
+                placeWordWithOverlap(word, successfullyPlacedWords);
             } else {
-                System.out.println("Unable to place word: " + word);
+                placeWordNormally(word, successfullyPlacedWords);
             }
         }
         wordBank.clear();
         wordBank.addAll(successfullyPlacedWords);
     }
 
-    private List<int[]> findPossiblePositions(String word) {
+    private void placeWordWithOverlap(String word, List<String> successfullyPlacedWords) {
+        List<int[]> possiblePositions = findPossiblePositions(word, true);
+        if (!possiblePositions.isEmpty()) {
+            int[] position = possiblePositions.get(random.nextInt(possiblePositions.size()));
+            placeWord(word, position[0], position[1], position[2]);
+            successfullyPlacedWords.add(word);
+            overlapCount++;
+        }
+    }
+
+    private void placeWordNormally(String word, List<String> successfullyPlacedWords) {
+        List<int[]> possiblePositions = findPossiblePositions(word, false);
+        if (!possiblePositions.isEmpty()) {
+            int[] position = possiblePositions.get(random.nextInt(possiblePositions.size()));
+            placeWord(word, position[0], position[1], position[2]);
+            successfullyPlacedWords.add(word);
+        } else {
+            System.out.println("Unable to place word: " + word);
+        }
+    }
+
+    private List<int[]> findPossiblePositions(String word, boolean forceOverlap) {
         List<int[]> positions = new ArrayList<>();
         // Attempt to find positions that encourage overlapping
-        for (int i = 0; i < size; i++) {
-            for (int j = 0; j < size; j++) {
-                if (board[i][j] != '-' && containsChar(word, board[i][j])) {
-                    for (int orientation = 0; orientation < 3; orientation++) {
-                        if (canPlaceWord(word, i, j, orientation)) {
-                            positions.add(new int[]{i, j, orientation});
+        if (forceOverlap) {
+            for (int i = 0; i < size; i++) {
+                for (int j = 0; j < size; j++) {
+                    if (board[i][j] != '-' && containsChar(word, board[i][j])) {
+                        for (int orientation = 0; orientation < 3; orientation++) {
+                            if (canPlaceWord(word, i, j, orientation)) {
+                                positions.add(new int[]{i, j, orientation});
+                            }
                         }
                     }
                 }
             }
         }
-        // If no overlapping positions are possible, find any position
+        // If no overlapping positions are possible or not forcing overlap, find any position
         if (positions.isEmpty()) {
             for (int i = 0; i < size; i++) {
                 for (int j = 0; j < size; j++) {
@@ -103,10 +123,7 @@ public class Board {
     }
 
     private boolean containsChar(String word, char c) {
-        for (char w : word.toCharArray()) {
-            if (w == c) return true;
-        }
-        return false;
+        return word.indexOf(c) >= 0;
     }
 
     private boolean canPlaceWord(String word, int row, int col, int orientation) {
