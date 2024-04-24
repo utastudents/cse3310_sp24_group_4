@@ -62,6 +62,8 @@ fetch('/wordgrid')
                 newCell.style.width = '20px'; // Set width to 20px
                 newCell.style.height = '15px'; // Set height to 15px
                 newCell.style.cursor = 'pointer'; // Add cursor pointer
+                newCell.dataset.x = i;
+                newCell.dataset.y = j;
                 // Copy the text content of the corresponding cell in the grid
                 const gridCell = tempDiv.querySelector(`tr:nth-child(${i + 1}) td:nth-child(${j + 1})`);
                 if (gridCell) {
@@ -89,6 +91,43 @@ fetch('/wordgrid')
     })
     .catch(error => console.error('Error fetching word grid:', error));
 
+let firstLetter = null;
+let secondLetter = null;
+wordGrid.addEventListener('click', function (event) {
+    
+        if (!firstLetter) {
+            console.log(event.target)
+            console.log(event.target.dataset.x)
+            console.log(event.target.dataset.y)
+
+            firstLetter = event.target;
+
+            
+
+            //sendLetterSelection(firstLetter.dataset.x, firstLetter.dataset.y);
+            //event.target.classList.add('selected'); // Visually mark the item
+        } else if (!secondLetter && event.target !== firstLetter) {
+            secondLetter = event.target;
+            console.log(event.target.dataset.x)
+            console.log(event.target.dataset.y)
+            //sendWordSelection(firstLetter, secondLetter);
+
+            let obj = {
+                type: "letterSelection",
+                firstLetterCoordinate: [firstLetter.dataset.x, firstLetter.dataset.y],
+                secondLetterCoordinate: [event.target.dataset.x, event.target.dataset.y]
+            };
+            connection.send(JSON.stringify(obj));
+
+            if (firstLetter !== null && secondLetter !== null) {
+                firstLetter = null;
+                secondLetter = null;
+            }
+            
+            //resetSelections();
+        }
+    
+});
 
         
 // highlights letters
