@@ -20,6 +20,14 @@ const chatBox = document.querySelector('.chat');
 const wordGrid = document.getElementById('wordGrid');
 const wordBank = document.getElementById('wordBank');
 const container = document.getElementById('container');
+const lobby_players = document.querySelector('.lobby-players');
+const border = document.querySelector('.border');
+const player1 = document.querySelector('.player1'); 
+const player2 = document.querySelector('.player2');
+const player3 = document.querySelector('.player3');
+const player4 = document.querySelector('.player4');
+
+const line = document.querySelector('.horizontal-line');
     
 startGameBtn.addEventListener('click', () => {
     lobby.classList.add('hidden');
@@ -31,12 +39,48 @@ startGameBtn.addEventListener('click', () => {
     wordBank.classList.remove('hidden');
     lobby.classList.add('scale');
     container.classList.add('leader');
-});
-join.addEventListener('click', () => {
+    lobby_players.classList.add('hidden');
+    border.classList.add('hidden');
+    line.style.top = '80px';
+    line.style.width = '50%';
     
 });
+join.addEventListener('click', () => {
+    if(player1.classList.contains('hidden')) {
+        player1.classList.remove('hidden');
+        border.classList.remove('hidden');
+    }
+    else if (player2.classList.contains('hidden')) {
+        player2.classList.remove('hidden');
+        border.classList.remove('hidden');
+    }
+    else if (player3.classList.contains('hidden')) {
+        player3.classList.remove('hidden');
+        border.classList.remove('hidden');
+    }
+    else if (player4.classList.contains('hidden')) {
+        player4.classList.remove('hidden');
+        border.classList.remove('hidden');
+    }
+});
 leave.addEventListener('click', () => {
-        
+    const counter = 0;
+    while(counter = 0) {
+        if (player1.classList != hidden) {
+            player1.classList.remove('hidden');
+            counter++;
+        }
+        else if (player2.classList != hidden) {
+            player2.classList.remove('hidden');
+
+        }
+        else if (player2.classList != hidden) {
+            player3.classList.remove('hidden');
+        }
+        else if (player2.classList != hidden) {
+            player4.classList.remove('hidden');
+        }
+    }
 });
 
 

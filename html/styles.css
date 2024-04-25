@@ -14,7 +14,7 @@ body.remove-background {
 header {
     position: fixed;
     font-size: 2em;
-    top: -20px;
+    top: -30px;
     left: -20px;
     width: 100%;
     padding: 20px 100px;
@@ -47,9 +47,9 @@ header {
 
 .lobby .players {
     position: fixed;
-    font-size: 1.2em;
+    font-size: 1.8em;
     text-decoration: underline;
-    top: 0;
+    top: -20px;
     left: 20px;
     display: flex;
 }
@@ -187,6 +187,10 @@ header {
 }
 .hidden {
     display: none;
+    transition: ease-in-out;
+    transition-duration: 0.5s;
+    transition-timing-function: ease-in-out;
+    transition-delay: 0.2s;
 }
 .appear {
     display: visible;
@@ -249,5 +253,43 @@ td.selected {
 #wordGrid {
     position: fixed;
     left: 50px;
+    top: 115px;
+}
+
+.lobby-players {
+    position: relative;
+    font-family: cursive;
+    left: -750px;
+    top: -10px;
+    font-size: 2.1em;
+    padding-top: 5px; /* Keep vertical padding unchanged */
+    padding-bottom: 15px;
+    padding-left: 40px; /* Increase left padding */
+    padding-right: 40px; /* Increase right padding */
+    line-height: 2.5;
+}
+.border {
+    position: relative;
+    top: 0px;
+    left: -975px;
+    width: 325px; /* Set width of the box */
+    height: 375px; /* Set height of the box */
+    border: 2px solid #0a1b52; /* Add border */
+    border-radius: 10px; /* Add border radius for rounded corners */
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1); /* Add box shadow */
+}
+
+.lobby-player1,
+.lobby-player2,
+.lobby-player3,
+.lobby-player4 {
+    text-indent: -35px;
+}
+
+.horizontal-line {
+    position: fixed;
     top: 100px;
+    height: 1px; /* Set the height of the line */
+    width: 100%; /* Set the width to span from left to right */
+    background-color: #000; /* Set the color of the line */
 }
