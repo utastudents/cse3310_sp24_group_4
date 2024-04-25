@@ -102,15 +102,11 @@ wordGrid.addEventListener('click', function (event) {
 
             firstLetter = event.target;
 
-            
 
-            //sendLetterSelection(firstLetter.dataset.x, firstLetter.dataset.y);
-            //event.target.classList.add('selected'); // Visually mark the item
         } else if (!secondLetter && event.target !== firstLetter) {
             secondLetter = event.target;
             console.log(event.target.dataset.x)
             console.log(event.target.dataset.y)
-            //sendWordSelection(firstLetter, secondLetter);
 
             let obj = {
                 type: "letterSelection",
@@ -123,8 +119,6 @@ wordGrid.addEventListener('click', function (event) {
                 firstLetter = null;
                 secondLetter = null;
             }
-            
-            //resetSelections();
         }
     
 });
