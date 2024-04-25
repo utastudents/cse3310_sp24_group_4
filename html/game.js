@@ -48,39 +48,37 @@ startGameBtn.addEventListener('click', () => {
 join.addEventListener('click', () => {
     if(player1.classList.contains('hidden')) {
         player1.classList.remove('hidden');
-        border.classList.remove('hidden');
+        
     }
     else if (player2.classList.contains('hidden')) {
         player2.classList.remove('hidden');
-        border.classList.remove('hidden');
+        
     }
     else if (player3.classList.contains('hidden')) {
         player3.classList.remove('hidden');
-        border.classList.remove('hidden');
+        
     }
     else if (player4.classList.contains('hidden')) {
         player4.classList.remove('hidden');
-        border.classList.remove('hidden');
+        
     }
 });
 leave.addEventListener('click', () => {
-    const counter = 0;
-    while(counter = 0) {
-        if (player1.classList != hidden) {
-            player1.classList.remove('hidden');
-            counter++;
+    if (!player1.classList.contains('hidden')) {
+        player1.classList.remove('hidden');
+        
         }
-        else if (player2.classList != hidden) {
-            player2.classList.remove('hidden');
+    else if (!player2.classList.contains('hidden')) {
+        player2.classList.remove('hidden');
 
-        }
-        else if (player2.classList != hidden) {
-            player3.classList.remove('hidden');
-        }
-        else if (player2.classList != hidden) {
-            player4.classList.remove('hidden');
-        }
     }
+    else if (!player3.classList.contains('hidden')) {
+        player3.classList.remove('hidden');
+    }
+    else if (!player4.classList.contains('hidden')) {
+        player4.classList.remove('hidden');
+    }
+    
 });
 
 
