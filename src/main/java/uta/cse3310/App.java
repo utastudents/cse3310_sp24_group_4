@@ -38,6 +38,8 @@
 
 package uta.cse3310;
 
+import static spark.Spark.*;
+
 import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
 import java.util.Collections;
@@ -51,10 +53,6 @@ import org.java_websocket.server.WebSocketServer;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import org.java_websocket.server.WebSocketServer;
-import java.net.InetSocketAddress;
-import java.util.Collections;
-import static spark.Spark.*;
 
 public class App extends WebSocketServer {
   // All server(s) currently underway on this server stored here
@@ -63,6 +61,7 @@ public class App extends WebSocketServer {
 
   public int numOfPlayers = 1;
   public int playerId = 1;
+  public int lobbyId = 1;
   private int connectionId = 0;
   // private Instant startTime;
   // private Statistics stats;
@@ -99,11 +98,12 @@ public class App extends WebSocketServer {
     }
     // No matches? Create a new Lobby.
     else if (lob == null) {
-      lob = new Lobby();
+      lob = new Lobby(lobbyId);
       lob.numOfPlayers = numOfPlayers;
       numOfPlayers++;
       lob.playerId = playerId;
       playerId++;
+      lobbyId++;
       System.out.println("Creating a new Lobby.");
     }
     else {
@@ -112,7 +112,7 @@ public class App extends WebSocketServer {
     }
 
     // create an event to go to only the new player
-    E.YouAre = lob.players;
+    E.YouAre = lob.playerT;
     // E.GameId = G.GameId;
 
     // allows the websocket to give us the Game when a message arrives..

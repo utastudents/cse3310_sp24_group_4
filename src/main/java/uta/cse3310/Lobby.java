@@ -8,22 +8,24 @@ import java.util.ArrayList;
 public class Lobby {
     public ArrayList<GameRoom> rooms = new ArrayList<GameRoom>();
     public ArrayList<String> playerNames = new ArrayList<String>();
-    public PlayerType players;
-    // public String[] playerNames;
+    public ArrayList<Player> players = new ArrayList<Player>();
+    public PlayerType playerT;
     public int numOfPlayers;
     public int playerId;
+    public int lobbyId;
     public Score score;
+    public Leaderboard leaderboard;
 
-    public Lobby()
+    public Lobby(int lobbyId)
     {
-
+        this.lobbyId = lobbyId;
     }
 
     public void createGame()
     {
         // Creates a game lobby where players can join
         GameRoom GR = null;
-        GR = new GameRoom(score);
+        GR = new GameRoom(score, leaderboard);
         GR.GameId += 1;
         // Add the first player
         GR.PlayerNum = PlayerType.ONE;
@@ -32,20 +34,34 @@ public class Lobby {
         System.out.println("Creating a new Game Room");
     }
 
-    public String displayLobby()
+    // roomId should be from 0-4 where the button to join will be dependent on the order of where it is on the list
+    // of rooms and will send the information to that room only
+    public void joinRoom(int roomId) {
+        if(rooms.isEmpty() == false && (roomId >= 0 && roomId <= 4)) {
+            GameRoom targetRoom = rooms.get(roomId);
+            targetRoom.playerCount += 1;
+            if(targetRoom.playerCount == 2) {
+                targetRoom.PlayerNum = PlayerType.TWO;
+            }
+            else if(targetRoom.playerCount == 3) {
+                targetRoom.PlayerNum = PlayerType.THREE;
+            }
+            else if(targetRoom.playerCount == 4) {
+                targetRoom.PlayerNum = PlayerType.FOUR;
+            }
+        }
+    }
+
+    public ArrayList<String> displayLobby()
     {
-        // Shows all players currently in the lobby in a list
+        // Gives array list of all players currently in the lobby in a list for use
 
         // Testing purposes
         for(String s: playerNames) {
             System.out.println(s);
         }
 
-        /* for(String name : playerNames) {
-            return name;
-        } */
-
-        return null;
+        return playerNames;
     }
 
     public void displayHelp()
@@ -57,11 +73,13 @@ public class Lobby {
         // (should be the first thing they are shown/allowed to do)
         if(checkUniqueName(input) == true) {
             playerNames.add(input);
+            Player newPlayer = new Player("input", playerId);
+            players.add(newPlayer);
             return "Valid username.";
         }
         else {
             return "Username taken.";
-        } 
+        }
     }
 
     public boolean checkUniqueName(String input)
