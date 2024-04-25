@@ -14,4 +14,7 @@ public class Score {
             this.score = newScore;
         }
     }
+    public int getScore() {
+        return score;
+    }
 }
