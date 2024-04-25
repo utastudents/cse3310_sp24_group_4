@@ -8,8 +8,8 @@ public class Board {
     private int size;
     private Random random;
     private List<String> wordBank;
+    private int overlapCount = 0;  // Track the number of words that have overlapped
 
-    // Default constructor with customizable filename and word count
     public Board(String filename, int numberOfWords) {
         this.size = determineSizeFromEnv();
         this.board = new char[size][size];
@@ -17,12 +17,10 @@ public class Board {
         this.wordBank = new ArrayList<>();
         loadWordsFromFile(filename, numberOfWords);
         initializeBoard();
-
     }
 
-    // Overload constructor for default settings
     public Board() {
-        this("newWords.txt", 20);  // Default filename and number of words
+        this("newWords.txt", 35);
     }
 
     private int determineSizeFromEnv() {
@@ -30,7 +28,7 @@ public class Board {
         try {
             return Integer.parseInt(gridSize);
         } catch (NumberFormatException e) {
-            return 35; // Default size if environment variable is not set
+            return 35;  // Default size if environment variable is not set
         }
     }
 
@@ -40,7 +38,7 @@ public class Board {
                 board[i][j] = '-';
             }
         }
-        putWords(20); // Place random words after initializing board
+        putWords(35);  // Place random words after initializing board
         fillEmptySpaces();
     }
 
@@ -51,110 +49,112 @@ public class Board {
             while ((line = reader.readLine()) != null) {
                 lines.add(line.trim());
             }
-            Collections.shuffle(lines); // Shuffle the lines to randomize
-            wordBank.addAll(lines.subList(0, Math.min(numberOfWords, lines.size()))); // Add only the required number of words
+            Collections.shuffle(lines);
+            wordBank.addAll(lines.subList(0, Math.min(numberOfWords, lines.size())));
         } catch (IOException e) {
             System.err.println("Failed to load words from file: " + e.getMessage());
         }
     }
 
     void putWords(int numberOfWords) {
-        List<String> wordsToPlace = new ArrayList<>();
-        int placedCount = 0;
+        Collections.shuffle(wordBank);
+        List<String> successfullyPlacedWords = new ArrayList<>();
         for (String word : wordBank) {
-            if (placedCount >= numberOfWords) {
-                break; // Stop if enough words are placed
+            if (overlapCount < 10) {
+                placeWordWithOverlap(word, successfullyPlacedWords);
+            } else {
+                placeWordNormally(word, successfullyPlacedWords);
             }
-            List<int[]> possiblePositions = findPossiblePositions(word);
-            if (!possiblePositions.isEmpty()) {
-                Collections.shuffle(possiblePositions); // Randomize possible positions
-                for (int[] position : possiblePositions) {
-                    int row = position[0];
-                    int col = position[1];
-                    int orientation = position[2]; // 0 for vertical, 1 for horizontal, 2 for diagonal
+        }
+        wordBank.clear();
+        wordBank.addAll(successfullyPlacedWords);
+    }
 
-                    if (canPlaceWord(word, row, col, orientation)) {
-                        placeWord(word, row, col, orientation);
-                        wordsToPlace.add(word); // Add the placed word to the list
-                        placedCount++;
-                        break;
+    private void placeWordWithOverlap(String word, List<String> successfullyPlacedWords) {
+        List<int[]> possiblePositions = findPossiblePositions(word, true);
+        if (!possiblePositions.isEmpty()) {
+            int[] position = possiblePositions.get(random.nextInt(possiblePositions.size()));
+            placeWord(word, position[0], position[1], position[2]);
+            successfullyPlacedWords.add(word);
+            overlapCount++;
+        }
+    }
+
+    private void placeWordNormally(String word, List<String> successfullyPlacedWords) {
+        List<int[]> possiblePositions = findPossiblePositions(word, false);
+        if (!possiblePositions.isEmpty()) {
+            int[] position = possiblePositions.get(random.nextInt(possiblePositions.size()));
+            placeWord(word, position[0], position[1], position[2]);
+            successfullyPlacedWords.add(word);
+        } else {
+            System.out.println("Unable to place word: " + word);
+        }
+    }
+
+    private List<int[]> findPossiblePositions(String word, boolean forceOverlap) {
+        List<int[]> positions = new ArrayList<>();
+        // Attempt to find positions that encourage overlapping
+        if (forceOverlap) {
+            for (int i = 0; i < size; i++) {
+                for (int j = 0; j < size; j++) {
+                    if (board[i][j] != '-' && containsChar(word, board[i][j])) {
+                        for (int orientation = 0; orientation < 3; orientation++) {
+                            if (canPlaceWord(word, i, j, orientation)) {
+                                positions.add(new int[]{i, j, orientation});
+                            }
+                        }
                     }
                 }
             }
         }
-        wordBank.clear(); // Clear the word bank
-        wordBank.addAll(wordsToPlace); // Add the placed words to the word bank
-    }
-
-    private List<int[]> findPossiblePositions(String word) {
-        List<int[]> positions = new ArrayList<>();
-        for (int i = 0; i < size; i++) {
-            for (int j = 0; j < size; j++) {
-                if (canPlaceWord(word, i, j, 0)) {  // Check vertical possibility
-                    positions.add(new int[]{i, j, 0});
-                }
-                if (canPlaceWord(word, i, j, 1)) {  // Check horizontal possibility
-                    positions.add(new int[]{i, j, 1});
-                }
-                if (canPlaceWord(word, i, j, 2)) {  // Check diagonal possibility
-                    positions.add(new int[]{i, j, 2});
+        // If no overlapping positions are possible or not forcing overlap, find any position
+        if (positions.isEmpty()) {
+            for (int i = 0; i < size; i++) {
+                for (int j = 0; j < size; j++) {
+                    for (int orientation = 0; orientation < 3; orientation++) {
+                        if (canPlaceWord(word, i, j, orientation)) {
+                            positions.add(new int[]{i, j, orientation});
+                        }
+                    }
                 }
             }
         }
         return positions;
     }
 
+    private boolean containsChar(String word, char c) {
+        return word.indexOf(c) >= 0;
+    }
+
     private boolean canPlaceWord(String word, int row, int col, int orientation) {
-        if (orientation == 0) {
-            // Vertical placement
-            if (row + word.length() > size) {
-                return false; // Word exceeds board size vertically
+        int wordLength = word.length();
+        if (orientation == 0 && row + wordLength > size) return false;
+        if (orientation == 1 && col + wordLength > size) return false;
+        if (orientation == 2 && (row + wordLength > size || col + wordLength > size)) return false;
+
+        for (int i = 0; i < wordLength; i++) {
+            int x = row + (orientation == 0 ? i : 0);
+            int y = col + (orientation == 1 ? i : 0);
+            if (orientation == 2) {
+                x = row + i;
+                y = col + i;
             }
-            for (int i = 0; i < word.length(); i++) {
-                if (board[row + i][col] != '-' && board[row + i][col] != word.charAt(i)) {
-                    return false; // Word clashes with existing letter
-                }
-            }
-        } else if (orientation == 1) {
-            // Horizontal placement
-            if (col + word.length() > size) {
-                return false; // Word exceeds board size horizontally
-            }
-            for (int i = 0; i < word.length(); i++) {
-                if (board[row][col + i] != '-' && board[row][col + i] != word.charAt(i)) {
-                    return false; // Word clashes with existing letter
-                }
-            }
-        } else if (orientation == 2) {
-            // Diagonal placement
-            if (row + word.length() > size || col + word.length() > size) {
-                return false; // Word exceeds board size diagonally
-            }
-            for (int i = 0; i < word.length(); i++) {
-                if (board[row + i][col + i] != '-' && board[row + i][col + i] != word.charAt(i)) {
-                    return false; // Word clashes with existing letter
-                }
+            if (board[x][y] != '-' && board[x][y] != word.charAt(i)) {
+                return false;
             }
         }
         return true;
     }
 
     private void placeWord(String word, int row, int col, int orientation) {
-        if (orientation == 0) {
-            // Vertical placement
-            for (int i = 0; i < word.length(); i++) {
-                board[row + i][col] = word.charAt(i);
+        for (int i = 0; i < word.length(); i++) {
+            int x = row + (orientation == 0 ? i : 0);
+            int y = col + (orientation == 1 ? i : 0);
+            if (orientation == 2) {
+                x = row + i;
+                y = col + i;
             }
-        } else if (orientation == 1) {
-            // Horizontal placement
-            for (int i = 0; i < word.length(); i++) {
-                board[row][col + i] = word.charAt(i);
-            }
-        } else if (orientation == 2) {
-            // Diagonal placement
-            for (int i = 0; i < word.length(); i++) {
-                board[row + i][col + i] = word.charAt(i);
-            }
+            board[x][y] = word.charAt(i);
         }
     }
 
@@ -162,7 +162,7 @@ public class Board {
         for (int i = 0; i < size; i++) {
             for (int j = 0; j < size; j++) {
                 if (board[i][j] == '-') {
-                    board[i][j] = (char) ('A' + random.nextInt(26)); // Fill with a random letter
+                    board[i][j] = (char) ('A' + random.nextInt(26));
                 }
             }
         }
