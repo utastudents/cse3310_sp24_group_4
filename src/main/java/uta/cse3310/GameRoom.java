@@ -55,7 +55,7 @@ public class GameRoom {
         }
         // Testing purposes
         System.out.println("Invalid color.");
-        
+
         return null;
     }
 
@@ -83,13 +83,18 @@ public class GameRoom {
         // Allows the host to start the game whenever amount of players is valid
         if(playerCount >= 2 || playerCount <= 4) {
             // game has option to be started
+            System.out.println("Game can be started");
             return true;
         }
         else if(playerCount > 4) {
             // Player after the 4th joins is moved into another lobby and game can be started still
-            playerCount -= 1;
+            while(playerCount > 4) {
+                playerCount -= 1;
+            }
+            System.out.println("Game can be started after 5th player was moved");
             return true;
         }
+        System.out.println("Not enough players");
         return false;
     }
 }
