@@ -1,10 +1,10 @@
 package uta.cse3310;
 
+import java.util.ArrayList;
+
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
-
-import java.util.ArrayList;
 
 public class LobbyTest extends TestCase
 {
@@ -26,7 +26,7 @@ public class LobbyTest extends TestCase
 
     public void testCreateGame()
     {
-        Lobby L = new Lobby();
+        Lobby L = new Lobby(1);
         
         L.createGame();
 
@@ -40,7 +40,7 @@ public class LobbyTest extends TestCase
         names.add("Bob123");
         names.add("Dave_0");
         // String[] names = {"James", "Bob123", "Dave_0"};
-        Lobby L = new Lobby();
+        Lobby L = new Lobby(1);
 
         L.playerNames = names;
 
@@ -55,7 +55,7 @@ public class LobbyTest extends TestCase
         names.add("Curious George");
         names.add("123_name");
         // String[] names = {"Dan", "xx_WordSearchGamer", "Curious George", "123_name"};
-        Lobby L = new Lobby();
+        Lobby L = new Lobby(1);
 
         L.playerNames = names;
 

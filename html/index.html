@@ -32,18 +32,23 @@
          <div id="container">
             <div class="leaderboard-row">
                 <div class="Player-name">LEADERBOARD</div><div class="score "></div>
+                <ion-icon class = "ribbon" name="ribbon-outline"></ion-icon>
             </div>
             <div class="row">
                 <div class="Player-name Player1">Player1</div><div class="words-found-name Player1">Words Found:</div><div class="words-found Player1">0</div><div class="score-name Player1">Points:</div><div class="score Player1">1</div>
+                <div class = "box1-color"></div>
             </div>
             <div class="row">
-                <div class="Player-name Player2">Player2</div><div class="words-found-name Player2">Words Found:</div><div class="words-found Player2">0</div><div class="score-name Player2">Points:</div><div class="score Player2">2</div>
+                <div class="Player-name Player2">Player2</div></span><div class="words-found-name Player2">Words Found:</div><div class="words-found Player2">0</div><div class="score-name Player2">Points:</div><div class="score Player2">2</div>
+                <div class = "box2-color"></div>
             </div>
             <div class="row">
-                <div class="Player-name Player3">Player3</div><div class="words-found-name Player3">Words Found:</div><div class="words-found Player3">0</div><div class="score-name Player3">Points:</div><div class="score Player3">3</div>
+                <div class="Player-name Player3">Player3</div></span><div class="words-found-name Player3">Words Found:</div><div class="words-found Player3">0</div><div class="score-name Player3">Points:</div><div class="score Player3">3</div>
+                <div class = "box3-color"></div>
             </div>
             <div class="row">
-                <div class="Player-name Player4">Player4</div><div class="words-found-name Player4">Words Found:</div><div class="words-found Player4">0</div><div class="score-name Player4">Points:</div><div class="score Player4">4</div>
+                <div class="Player-name Player4">Player4</div></span><div class="words-found-name Player4">Words Found:</div><div class="words-found Player4">0</div><div class="score-name Player4">Points:</div><div class="score Player4">4</div>
+                <div class = "box4-color"></div>
             </div>
         </div>
         <div class = "wordGridContainer">
@@ -51,10 +56,17 @@
 
             <div id="wordBank" class="hidden"></div>
         </div>
-        
-
-        
+        <div class = "lobby-players">
+        <div class = "lobby-player1 hidden" >1. Player1</div>
+        <div class = "lobby-player2 hidden" >2. Player2</div>
+        <div class = "lobby-player3 hidden" >3. Player3</div>
+        <div class = "lobby-player4 hidden" >4. Player4</div>
+        </div>
+        <div class = "border hidden"></div>
+        <div class="horizontal-line"></div>
+        <div class = "color-box"></div>
         <div class="chat hidden">
+            <ion-icon class = "text-icon" name="chatbox-ellipses-outline"></ion-icon>
             <div id="chatBox"></div>
             <input type="text" id="userInput">
             <button id="send">Send</button>

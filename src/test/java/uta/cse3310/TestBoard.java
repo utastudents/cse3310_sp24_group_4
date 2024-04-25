@@ -28,7 +28,7 @@ public class TestBoard extends TestCase {
      * Test constructor to ensure proper board initialization
      */
     public void testBoardInitialization() {
-        Board board = new Board("newWords.txt", 20);
+        Board board = new Board("newWords.txt", 35);
         assertNotNull("Board should be initialized", board.getBoard());
         assertEquals("Default board size should be 20 if environment variable is not set", 35, board.getBoard().length);
     }
@@ -37,7 +37,7 @@ public class TestBoard extends TestCase {
      * Test word placement on the board
      */
     public void testWordPlacement() {
-        Board board = new Board("newWords.txt", 20);
+        Board board = new Board("newWords.txt", 35);
 
         // Clear the board entirely before placing words
         char[][] grid = board.getBoard();
@@ -46,7 +46,7 @@ public class TestBoard extends TestCase {
         }
 
         // Now place words on the clear board
-        board.putWords(20);
+        board.putWords(35);
         List<String> placedWords = board.getPlacedWords();
 
         // Check if all the words are correctly placed
@@ -123,7 +123,7 @@ public class TestBoard extends TestCase {
      * Test loading words from file
      */
     public void testLoadWordsFromFile() {
-        Board board = new Board("newWords.txt", 20);
+        Board board = new Board("newWords.txt", 35);
         // Checking if at least some words have been loaded (assuming the file has at least 5 words)
         assertTrue("Word bank should contain words", board.getPlacedWords().size() > 0);
     }
@@ -132,7 +132,7 @@ public class TestBoard extends TestCase {
      * Test board print functionality
      */
     public void testPrintBoard() {
-        Board board = new Board("newWords.txt", 20);
+        Board board = new Board("newWords.txt", 35);
         board.printBoard();
         // This test does not verify output but ensures there are no exceptions during printing
         assertTrue("Print board should complete without error", true);
