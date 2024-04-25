@@ -3,13 +3,14 @@ body {
     justify-content: center;
     align-items: center;
     min-height: 100vh;
-    background-image: url(pic.jpg);
+    background-image: url(background.jpg);
     background-size: cover;
     background-position: center;
     z-index: -1;
     }
 body.remove-background {
     background-image: none;
+    background-color: #FFFFF8;
 }
 header {
     position: fixed;
@@ -22,24 +23,27 @@ header {
     justify-content: space-between;
     align-items: center;
     z-index: 99;
+    font-style: italic;
 }
 #game-title {
     position: fixed;
     text-align: center;
     top: 0px;
     font-size: 2.5em;
+    font-family: Elena, sans-serif;
+    font-style: bold;
 }
 .lobby {
     position: absolute;
     width: 500px;
     height: 600px;
     top: 175px;
-    left: 115px;
+    left: 650px;
     background: transparent;
-    border: 2px solid rgba(0, 0, 0, 0.5);
+    border: 3px solid rgba(0, 0, 0, 0.5);
     border-radius: 20px;
-    backdrop-filter:blur(20px);
-    box-shadow: 0 0 30px rgba(0,0, 0, .5);
+    backdrop-filter:blur(10px);
+    box-shadow: 0 0 20px rgba(0,0, 0, .5);
     display: flex;
     justify-content: center;
     align-items: center;
@@ -47,7 +51,7 @@ header {
 
 .lobby .players {
     position: fixed;
-    font-size: 1.8em;
+    font-size: 1.7em;
     text-decoration: underline;
     top: -20px;
     left: 20px;
@@ -59,7 +63,7 @@ header {
     bottom: -50px;
     left: 30px;
     font-size: 1.5em;
-    border: 3px double;
+    border: 2px solid #827717;
     cursor: pointer;
 }
 
@@ -68,7 +72,7 @@ header {
     bottom: -50px;
     left: 190px; 
     font-size: 1.5em;
-    border: 3px double;
+    border: 2px solid #827717;
     cursor: pointer;
 }
 
@@ -89,30 +93,20 @@ header {
     bottom: -50px;
     right: 30px;
     font-size: 1.5em;
-    border: 3px double;
+    border: 2px solid #827717;
     cursor: pointer;
 }
 .btnStart {
-    position: absolute;
-    padding: 5px 10px;
-    right: 5px;
-    top: 5px;
+    position: relative;
+    right: -180px;
+    top: -330px;
     font-Size: 1.5em;
-    border: 3px double;
+    border: 3px;
+    border: 2px solid #827717;
     cursor: pointer;
+    z-index: 99;
+    overflow: visible;
 
-}
-.Player1 {
-    background-color: rgba(204, 50, 50, 0.63); /* row color for Player 1 */
-}
-.Player2 {
-    background-color: rgba(40, 40, 165, 0.692); /* row color for Player 2 */
-}
-.Player3 {
-    background-color: rgba(50, 218, 50, 0.671); /* row color for Player 3 */
-}
-.Player4 {
-    background-color: rgba(243, 243, 54, 0.658); /* row color for Player 4 */
 }
 .Player-name {
     position: relative;
@@ -123,7 +117,7 @@ header {
 .score {
     position: relative;
     display: inline-block;
-    width: 20%;
+    width: 5%;
     line-height: 45px;
 }
 .score-name {
@@ -163,14 +157,27 @@ header {
     display: block;
     width: 100%;
     height: 40px;
-    border: 1px solid #AFAFAF;
+    border: 4px solid #000;
+    text-indent: 5px;
+    letter-spacing: 1.4px;
+    font-weight: bold;
+    font-size: 1.1em;
+    
+}
+.ribbon {
+    position: fixed;
+    left: 170px;
+    bottom: 185px;
+    font-size: 18px;
 }
 .row {
     position: relative;
     display: block;
-    width: 100%;
+    width: 100.5%;
     height: 40px;
-    border: 1px solid #AFAFAF;
+    border: 3px solid #000;
+    border-top: 1px;
+    font-weight: bold;
 }
 .words-found-name {
     position: relative;
@@ -178,12 +185,29 @@ header {
     width: 20%;
     line-height: 45px;
     text-align: center;
+    padding-right: 10px;
+}
+.Player1 {
+    padding-left: 30px;
+    
+}
+.Player2 {
+    padding-left: 30px;
+}
+.Player3 {
+    /*background-color: rgba(50, 218, 50, 0.671);  row color for Player 3 */
+    padding-left: 30px;
+}
+.Player4 {
+    /*background-color: rgba(243, 243, 54, 0.658);  row color for Player 4 */
+    padding-left: 30px;
 }
 .words-found {
     position: relative;
     display: inline-block;
-    width: 20%;
+
     line-height: 45px;
+    text-indent: 5px;
 }
 .hidden {
     display: none;
@@ -217,6 +241,12 @@ header {
     overflow-y: scroll;
     border-bottom: 1px solid #ddd;
     padding: 2%;
+}
+
+.text-icon {
+    position: relative;
+    bottom: -345px;
+    left: -22px;
 }
 
 .td {
@@ -289,7 +319,55 @@ td.selected {
 .horizontal-line {
     position: fixed;
     top: 100px;
-    height: 1px; /* Set the height of the line */
+    height: 1.5px; /* Set the height of the line */
     width: 100%; /* Set the width to span from left to right */
     background-color: #000; /* Set the color of the line */
+    font-weight: bold;
+}
+.color-box {
+    position: relative;
+    top: -200px;
+    left: 0px;
+}
+.box1-color {
+    position: relative;
+    border: 1.5px solid #000;
+    top: -40px;
+    left: -1px;
+    width: 15px;
+    height: 15px; 
+    margin: 10px;
+    z-index: 99;
+    background: rgba(204, 50, 50, 0.63);
+}
+.box2-color {
+    position: relative;
+    top: -40px;
+    left: -1px;
+    border: 1.5px solid #000;
+    width: 15px;
+    height: 15px;
+    margin: 10px;
+    background-color: rgba(40, 40, 165, 0.692);
+    
+}
+.box3-color {
+    position: relative;
+    border: 1.5px solid #000;
+    top: -40px;
+    left: -1px;
+    width: 15px;
+    height: 15px;
+    margin: 10px;
+    background: greenyellow;
+}
+.box4-color {
+    position: relative;
+    border: 1.5px solid #000;
+    top: -40px;
+    left: -1px;
+    width: 15px;
+    height: 15px;
+    margin: 10px;
+    background: yellow;
 }
