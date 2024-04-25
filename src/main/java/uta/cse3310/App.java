@@ -112,7 +112,7 @@ public class App extends WebSocketServer {
     }
 
     // create an event to go to only the new player
-    E.YouAre = lob.players;
+    E.YouAre = lob.playerT;
     // E.GameId = G.GameId;
 
     // allows the websocket to give us the Game when a message arrives..
