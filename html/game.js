@@ -180,7 +180,7 @@ for (let node of document.querySelectorAll("td")){
 var connection = null;
 
 var serverUrl;
-serverUrl = "ws://" + window.location.hostname + ":9180";
+serverUrl = "ws://" + window.location.hostname + ":9104";
 // Create the connection with the server
 connection = new WebSocket(serverUrl);
 
