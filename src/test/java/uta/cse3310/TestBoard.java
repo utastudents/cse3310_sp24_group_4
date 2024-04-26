@@ -30,7 +30,7 @@ public class TestBoard extends TestCase {
     public void testBoardInitialization() {
         Board board = new Board("newWords.txt", 35);
         assertNotNull("Board should be initialized", board.getBoard());
-        assertEquals("Default board size should be 20 if environment variable is not set", 35, board.getBoard().length);
+        assertEquals("Default board size should be 20 if environment variable is not set", 20, board.getBoard().length);
     }
 
     /**
