@@ -95,9 +95,9 @@ fetch('/wordgrid')
         newTable.style.borderCollapse = 'collapse'; // Ensure borders collapse properly
 
         // Create 20 rows and 20 columns in the table
-        for (let i = 0; i < 35; i++) {
+        for (let i = 0; i < 20; i++) {
             const newRow = document.createElement('tr');
-            for (let j = 0; j < 35; j++) {
+            for (let j = 0; j < 20; j++) {
                 const newCell = document.createElement('td');
                 newCell.style.border = '1px solid black'; // Add border around each cell
                 newCell.style.textAlign = 'center'; // Center text horizontally
