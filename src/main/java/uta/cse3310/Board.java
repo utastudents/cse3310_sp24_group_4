@@ -28,7 +28,7 @@ public class Board {
         try {
             return Integer.parseInt(gridSize);
         } catch (NumberFormatException e) {
-            return 35;  // Default size if environment variable is not set
+            return 20;  // Default size if environment variable is not set
         }
     }
 
@@ -39,7 +39,7 @@ public class Board {
             }
         }
         putWords(35);  // Place random words after initializing board
-        fillEmptySpaces();
+        //fillEmptySpaces();
     }
 
     private void loadWordsFromFile(String filename, int numberOfWords) {
@@ -47,7 +47,7 @@ public class Board {
         try (BufferedReader reader = new BufferedReader(new FileReader(filename))) {
             String line;
             while ((line = reader.readLine()) != null) {
-                lines.add(line.trim());
+                lines.add(line.trim().toUpperCase());
             }
             Collections.shuffle(lines);
             wordBank.addAll(lines.subList(0, Math.min(numberOfWords, lines.size())));
@@ -147,6 +147,7 @@ public class Board {
     }
 
     private void placeWord(String word, int row, int col, int orientation) {
+        word = word.toUpperCase();
         for (int i = 0; i < word.length(); i++) {
             int x = row + (orientation == 0 ? i : 0);
             int y = col + (orientation == 1 ? i : 0);
