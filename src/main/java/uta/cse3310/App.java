@@ -150,12 +150,12 @@ public class App extends WebSocketServer {
 
   @Override
   public void onMessage(WebSocket conn, String message) {
-    
+
     if (message.startsWith("msg: ")) {
         //System.out.println("testt: " + message);
         messaging.sendMsg(message);
     } else {
-        
+    
     /* System.out
         .println("< " + Duration.between(startTime, Instant.now()).toMillis() + " " + "-" + " " + escape(message)); */
 
