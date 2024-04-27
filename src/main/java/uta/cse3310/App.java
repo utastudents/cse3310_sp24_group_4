@@ -42,6 +42,7 @@ import static spark.Spark.*;
 
 import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -53,6 +54,10 @@ import org.java_websocket.server.WebSocketServer;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 
 public class App extends WebSocketServer {
   // All server(s) currently underway on this server stored here
@@ -65,6 +70,7 @@ public class App extends WebSocketServer {
   private int connectionId = 0;
   // private Instant startTime;
   // private Statistics stats;
+  private static Board board;
 
   public App(int port) {
     super(new InetSocketAddress(port));
@@ -150,12 +156,53 @@ public class App extends WebSocketServer {
 
   @Override
   public void onMessage(WebSocket conn, String message) {
-
+    //System.out.println(message);
     if (message.startsWith("msg: ")) {
         //System.out.println("testt: " + message);
         messaging.sendMsg(message);
     } else {
+        JsonElement element = JsonParser.parseString(message);
+        JsonObject obj = element.getAsJsonObject();
+
+
+        String type = obj.get("type").getAsString();
+        if (type.equals("letterSelection")) 
+        {
+          JsonArray f = obj.get("firstLetterCoordinate").getAsJsonArray();
+          int[] first = new int[f.size()];
+
+          for (int i = 0; i < f.size(); i++) {
+              JsonElement e = f.get(i);
+              first[i] = e.getAsInt();
+          }
+
+          JsonArray s = obj.get("secondLetterCoordinate").getAsJsonArray();
+
+          int[] second = new int[s.size()];
+
+          for (int i = 0; i < s.size(); i++) {
+              JsonElement e = s.get(i);
+              second[i] = e.getAsInt();
+          }
+
+          //check if first and second is valid word
+            //first check if horizontal, diagnoal, veriticle
+          
+          char firstLetter = board.getBoard()[first[0]][first[1]];
+          char secondLetter = board.getBoard()[second[0]][second[1]];
     
+          obj = new JsonObject();
+          obj.addProperty("type", "valid");
+          System.out.println("End: " + board.validateSelection(firstLetter, secondLetter, first, second));
+          if (board.validateSelection(firstLetter, secondLetter, first, second)) {
+            obj.addProperty("firstLetter", Arrays.toString(first));
+            obj.addProperty("secondLetter", Arrays.toString(second));
+            broadcast(obj.toString());
+        } else {
+          System.out.println("nothing");
+        }
+
+
     /* System.out
         .println("< " + Duration.between(startTime, Instant.now()).toMillis() + " " + "-" + " " + escape(message)); */
 
@@ -180,6 +227,7 @@ public class App extends WebSocketServer {
         .println("> " + Duration.between(startTime, Instant.now()).toMillis() + " " + "*" + " " + escape(jsonString)); */
     broadcast(jsonString);
     }
+  }
     
   }
 
@@ -229,6 +277,7 @@ public class App extends WebSocketServer {
     HttpServer H = new HttpServer(port, "./html");
     H.start();
     System.out.println("http Server started on port: " + port);
+    board = H.getBoard();
 
     // create and start the websocket server
     port = 9104;
@@ -245,23 +294,6 @@ public class App extends WebSocketServer {
 
     messaging = new Messaging(A);
 
-    
-    // Define endpoint to generate and return word grid
-    get("/wordgrid", (req, res) -> {
-      Board board = new Board();
-      // Generate the word grid
-      char[][] grid = board.getBoard();
-      // Convert grid to HTML string
-      String htmlGrid = convertGridToHTML(grid);
-      return htmlGrid;
-    });  
-
-    get("/wordbank", (req, res) -> {
-      Board board = new Board();
-      List<String> placedWords = board.getPlacedWords();
-      String htmlWordBank = convertWordBankToHTML(placedWords);
-      return htmlWordBank;
-    });
   }
 
   

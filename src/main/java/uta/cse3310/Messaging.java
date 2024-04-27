@@ -3,6 +3,7 @@ import java.util.Arrays;
 import java.util.List;
 import org.java_websocket.WebSocket;
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 
 public class Messaging {
     private String[] msgHistory;
@@ -22,9 +23,12 @@ public class Messaging {
             //System.out.println("broadcasting: " + jsonMessage);
             webSocketServer.broadcast(jsonMessage);
         } else {
-            String jsonMessage = gson.toJson(msg);
+            JsonObject obj = new JsonObject();
+            obj.addProperty("type", "message");
+            obj.addProperty("msg", msg);
+            //String jsonMessage = gson.toJson(msg);
             //System.out.println("broadcasting: " + jsonMessage);
-            webSocketServer.broadcast(jsonMessage);
+            webSocketServer.broadcast(obj.toString());
         }
 
         return "Sent";

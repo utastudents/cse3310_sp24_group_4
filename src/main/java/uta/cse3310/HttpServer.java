@@ -16,7 +16,7 @@ import java.util.List;
 //            http://www.freeutils.net/source/jlhttp/
 
 public class HttpServer {
-
+    private Board board;
     private static final String HTML = "./html";
     int port = 8080;
     String dirname = HTML;
@@ -24,6 +24,7 @@ public class HttpServer {
     public HttpServer(int portNum, String dirName) {
         port = portNum;
         dirname = dirName;
+        this.board = new Board();
     }
 
     public void start() {
@@ -32,7 +33,6 @@ public class HttpServer {
             if (!dir.canRead())
                 throw new FileNotFoundException(dir.getAbsolutePath());
 
-            Board board = new Board();
 
             // set up server
             HTTPServer server = new HTTPServer(port);
@@ -106,5 +106,9 @@ public class HttpServer {
     
         return html.toString();
       }
+
+    public Board getBoard() {
+        return board;
+    }
 
 }
