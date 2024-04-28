@@ -192,15 +192,17 @@ public class App extends WebSocketServer {
           char secondLetter = board.getBoard()[second[0]][second[1]];
     
           obj = new JsonObject();
-          obj.addProperty("type", "valid");
+          
           System.out.println("End: " + board.validateSelection(firstLetter, secondLetter, first, second));
           if (board.validateSelection(firstLetter, secondLetter, first, second)) {
+            obj.addProperty("type", "valid");
             obj.addProperty("firstLetter", Arrays.toString(first));
             obj.addProperty("secondLetter", Arrays.toString(second));
             broadcast(obj.toString());
         } else {
-          System.out.println("nothing");
+          obj.addProperty("type", "notValid");
         }
+        
 
 
     /* System.out

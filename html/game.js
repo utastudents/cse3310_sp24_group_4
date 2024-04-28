@@ -252,7 +252,11 @@ function highlightWord(firstLetter, secondLetter, playerColor) {
 
     while (x !== X2 + changeX || y !== Y2 + changeY) {
         const cellItem = document.getElementById(`cell-${x}-${y}`);
-        cellItem.style.backgroundColor = 'blue';        //change to corr player color
+        const currentPlayerClass = `highlight-color-player${currentPlayerIndex + 1}`; 
+        if (!cellItem.classList.contains(currentPlayerClass)) {
+            cellItem.classList.add(currentPlayerClass); 
+        }
+        //cellItem.style.backgroundColor = `blue`        //change to corr player color
         cellItem.style.pointerEvents = 'none';
         x += changeX;
         y += changeY;
