@@ -69,8 +69,12 @@ public class TestBoard extends TestCase {
                     if (j + len <= m && checkHorizontal(grid, i, j, word)) {
                         return true;
                     }
-                    // Check vertically
+                    // Check vertically down
                     if (i + len <= n && checkVertical(grid, i, j, word)) {
+                        return true;
+                    }
+                    // Check vertically up
+                    if (i - len >= -1 && checkVerticalUp(grid, i, j, word)) {
                         return true;
                     }
                     // Check diagonally
@@ -82,6 +86,7 @@ public class TestBoard extends TestCase {
         }
         return false;
     }
+    
 
     /**
      * Helper method to check if a word is present horizontally on the board
@@ -119,6 +124,15 @@ public class TestBoard extends TestCase {
         return true;
     }
 
+    private boolean checkVerticalUp(char[][] grid, int row, int col, String word) {
+        for (int k = 0; k < word.length(); k++) {
+            if (row - k < 0 || grid[row - k][col] != word.charAt(k)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
     /**
      * Test loading words from file
      */
@@ -138,3 +152,5 @@ public class TestBoard extends TestCase {
         assertTrue("Print board should complete without error", true);
     }
 }
+
+
