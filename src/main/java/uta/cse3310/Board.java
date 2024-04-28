@@ -111,7 +111,7 @@ public class Board {
         if (positions.isEmpty()) {
             for (int i = 0; i < size; i++) {
                 for (int j = 0; j < size; j++) {
-                    for (int orientation = 0; orientation < 3; orientation++) {
+                    for (int orientation = 0; orientation < 4; orientation++) {
                         if (canPlaceWord(word, i, j, orientation)) {
                             positions.add(new int[]{i, j, orientation});
                         }
@@ -128,33 +128,54 @@ public class Board {
 
     private boolean canPlaceWord(String word, int row, int col, int orientation) {
         int wordLength = word.length();
-        if (orientation == 0 && row + wordLength > size) return false;
-        if (orientation == 1 && col + wordLength > size) return false;
-        if (orientation == 2 && (row + wordLength > size || col + wordLength > size)) return false;
-
+        if (orientation == 0 && col + wordLength > size) return false; 
+        if (orientation == 1 && row + wordLength > size) return false; 
+        if (orientation == 2 && (row + wordLength > size || col + wordLength > size)) return false; 
+        if (orientation == 3 && row - wordLength < 0) return false; // Vertical up
+    
         for (int i = 0; i < wordLength; i++) {
-            int x = row + (orientation == 0 ? i : 0);
-            int y = col + (orientation == 1 ? i : 0);
-            if (orientation == 2) {
+            int x = row;
+            int y = col;
+    
+            if (orientation == 0) {  // Horizontal
+                y = col + i;
+            } else if (orientation == 1) {  // Vertical down
+                x = row + i;
+            } else if (orientation == 2) {  // Diagonal
                 x = row + i;
                 y = col + i;
+            } else if (orientation == 3) {  // Vertical up
+                x = row - i;
             }
+    
             if (board[x][y] != '-' && board[x][y] != word.charAt(i)) {
                 return false;
             }
         }
         return true;
     }
-
+    
+    
     private void placeWord(String word, int row, int col, int orientation) {
         word = word.toUpperCase();
         for (int i = 0; i < word.length(); i++) {
-            int x = row + (orientation == 0 ? i : 0);
-            int y = col + (orientation == 1 ? i : 0);
-            if (orientation == 2) {
+            int x = row;
+            int y = col;
+    
+            if (orientation == 0) {  // Horizontal
+                x = row;
+                y = col + i;
+            } else if (orientation == 1) {  // Vertical down
+                x = row + i;
+                y = col;
+            } else if (orientation == 2) {  // Diagonal
                 x = row + i;
                 y = col + i;
+            } else if (orientation == 3) {  // Vertical up
+                x = row - i;
+                y = col;
             }
+    
             board[x][y] = word.charAt(i);
         }
     }
