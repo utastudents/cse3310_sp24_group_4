@@ -39,7 +39,7 @@ public class Board {
             }
         }
         putWords(35);  // Place random words after initializing board
-        //fillEmptySpaces();
+        fillEmptySpaces();
     }
 
     private void loadWordsFromFile(String filename, int numberOfWords) {
