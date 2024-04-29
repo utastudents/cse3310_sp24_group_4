@@ -298,33 +298,4 @@ public class App extends WebSocketServer {
 
   }
 
-  
-  private static String convertGridToHTML(char[][] grid) {
-    StringBuilder html = new StringBuilder("<table style=\"border-collapse: collapse; font-family: Arial, sans-serif;\">");
-    for (char[] row : grid) {
-        html.append("<tr>");
-        for (char cell : row) {
-            html.append("<td style=\"border: 1px solid black; width: 20px; height: 15px; text-align: center;\">").append(cell).append("</td>");
-        }
-        html.append("</tr>");
-    }
-    html.append("</table>");
-    return html.toString();
-  }
-
-  private static String convertWordBankToHTML(List<String> placedWords) {
-    StringBuilder html = new StringBuilder("<div id=\"wordBank\" style=\"border: 1px solid black; padding: 10px;max-width: 200px;\">");
-    html.append("<h2>Word Bank</h2>\n");
-    html.append("<ul>\n");
-
-    for (String word : placedWords) {
-        html.append("<li>").append(word).append("</li>\n");
-    }
-
-    html.append("</ul>\n");
-    html.append("</div>\n");
-
-    return html.toString();
-  }
-
 }
