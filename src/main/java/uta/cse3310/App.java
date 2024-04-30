@@ -44,7 +44,9 @@ import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.java_websocket.WebSocket;
 import org.java_websocket.drafts.Draft;
@@ -63,6 +65,7 @@ public class App extends WebSocketServer {
   // All server(s) currently underway on this server stored here
   // private Vector<Lobby> Lobbies = new Vector<Lobby>();
   Lobby lob = null;
+  Map<String, Integer> nameOrderMap = new LinkedHashMap<>();
 
   public int numOfPlayers = 1;
   // public int playerId = 1;
@@ -85,6 +88,19 @@ public class App extends WebSocketServer {
     super(new InetSocketAddress(port), Collections.<Draft>singletonList(draft));
     //messaging = new Messaging(this);
   }
+
+  private static void addName(Map<String, Integer> map, String name) {
+      int order = map.size() + 1;
+      map.put(name, order);
+  }
+
+  private static int getOrder(Map<String, Integer> map, String name) {
+    if (map.containsKey(name)) {
+        return map.get(name);
+    } else {
+        return -1;
+    }
+}
 
   @Override
   public void onOpen(WebSocket conn, ClientHandshake handshake) {
@@ -173,6 +189,9 @@ public class App extends WebSocketServer {
         conn.send(obj.toString());
       }
       else {
+
+        //add username to hashmap
+        addName(nameOrderMap, username);
         JsonObject obj = new JsonObject();
         obj.addProperty("msg", "Username valid");
         conn.send(obj.toString());
@@ -195,9 +214,10 @@ public class App extends WebSocketServer {
         JsonElement element = JsonParser.parseString(message);
         JsonObject obj = element.getAsJsonObject();
 
-
+        String userName = obj.get("userName").getAsString(); 
         String type = obj.get("type").getAsString();
         int game = obj.get("game").getAsInt();
+        
         System.out.println(game);
         if (type.equals("letterSelection")) 
         {
@@ -233,10 +253,16 @@ public class App extends WebSocketServer {
 
 
             if (board.validateSelection(firstLetter, secondLetter, first, second)) {
+ 
+              int order = getOrder(nameOrderMap, userName);
+              //get username and yea
+              System.out.println("user name" + userName);
+              System.out.println("order" + order);
               obj.addProperty("type", "valid");
               obj.addProperty("firstLetter", Arrays.toString(first));
               obj.addProperty("secondLetter", Arrays.toString(second));
               obj.addProperty("game", game);
+              obj.addProperty("userId", order);
               broadcast(obj.toString());
             } else {
               obj.addProperty("type", "notValid");
@@ -248,18 +274,25 @@ public class App extends WebSocketServer {
             char secondLetter = board2.getBoard()[second[0]][second[1]];
       
             obj = new JsonObject();
-            
             System.out.println("End: " + board2.validateSelection(firstLetter, secondLetter, first, second));
             //find which board to find validating words
               //highlight based on a corresponding game (so not all board higlight same word)
 
 
-            if (board2.validateSelection(firstLetter, secondLetter, first, second)) {
-              obj.addProperty("type", "valid");
-              obj.addProperty("firstLetter", Arrays.toString(first));
-              obj.addProperty("secondLetter", Arrays.toString(second));
-              obj.addProperty("game", game);
-              broadcast(obj.toString());
+              if (board2.validateSelection(firstLetter, secondLetter, first, second)) {
+                //String userName = obj.get("userName").getAsString(); 
+                int order = getOrder(nameOrderMap, userName);
+                //get username and yea
+
+                System.out.println("user name" + userName);
+                System.out.println("order" + order);
+  
+                obj.addProperty("type", "valid");
+                obj.addProperty("firstLetter", Arrays.toString(first));
+                obj.addProperty("secondLetter", Arrays.toString(second));
+                obj.addProperty("game", game);
+                obj.addProperty("userId", order);
+                broadcast(obj.toString());
             } else {
               obj.addProperty("type", "notValid");
             }
@@ -361,6 +394,8 @@ public class App extends WebSocketServer {
     return retval;
   }
 
+
+  
   public static void main(String[] args) {
     String HttpPort = System.getenv("HTTP_PORT");
     int port = 9004;
@@ -392,4 +427,6 @@ public class App extends WebSocketServer {
 
   }
 
+  
 }
+

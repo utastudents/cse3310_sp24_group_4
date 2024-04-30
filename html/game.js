@@ -6,7 +6,7 @@ const highlightColors = [
                         'highlight-color-player4'
                     ];
     // highlight color depends on player
-    let currentPlayerIndex = 1;
+let currentPlayerIndex = undefined;
 
 const startGameBtn = document.querySelector('.btnStart');
 const create = document.querySelector('.btn');
@@ -30,7 +30,7 @@ const player2 = document.querySelector('.player2');
 const player3 = document.querySelector('.player3');
 const player4 = document.querySelector('.player4');
 
-var userName = document.getElementById("username");
+var userName = document.getElementById("username");         //send user name everytime to backend (add userName to array and if first then they get red and so on)
 var userSubmit = document.getElementById("userSubmit");
 var userText = document.getElementById("userText");
 const getUserWindow = document.getElementById("getUsernameWindow");
@@ -60,7 +60,12 @@ fetch('/wordgrid')
     //console.log(response.text())
     //console.log(response)
     game = 2
-
+    if (currentPlayerIndex === undefined) {
+        currentPlayerIndex = 1
+    } else if(currentPlayerIndex === 1) {
+        currentPlayerIndex = 2;
+    }
+    console.log("PLAYER:" +currentPlayerIndex);
 
     let obj = {
         type: "a"
@@ -115,6 +120,8 @@ fetch('/wordgrid')
             }
         };
     });
+
+    //maybe call backend to see which color
 })
 .catch(error => console.error('Error fetching word grid:', error));
 
@@ -153,6 +160,13 @@ fetch('/wordgrid2')
     //console.log(response.text())
     //console.log(response)
     game = 1;
+
+    if (currentPlayerIndex === undefined) {
+        currentPlayerIndex = 1
+    } else if(currentPlayerIndex === 1) {
+        currentPlayerIndex = 2;
+    }
+    console.log("PLAYER:" +currentPlayerIndex);
 
     let obj = {
         type: "a"
@@ -295,12 +309,13 @@ wordGrid.addEventListener('click', function (event) {
             secondLetter = event.target;
             console.log(event.target.dataset.x)
             console.log(event.target.dataset.y)
-            
+            console.log(userName.value);
             let obj = {
                 type: "letterSelection",
                 firstLetterCoordinate: [firstLetter.dataset.x, firstLetter.dataset.y],
                 secondLetterCoordinate: [event.target.dataset.x, event.target.dataset.y],
-                game: game
+                game: game,
+                userName: userName.value
             };
             connection.send(JSON.stringify(obj));
 
@@ -364,7 +379,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 
-function highlightWord(firstLetter, secondLetter, playerColor) {
+function highlightWord(firstLetter, secondLetter, userId) {
 
     const X1 = firstLetter[0];
     const Y1 = firstLetter[1];
@@ -384,16 +399,16 @@ function highlightWord(firstLetter, secondLetter, playerColor) {
             cellItem.classList.add(currentPlayerClass); 
         }
                 //change to corr player color
-        if (currentPlayerIndex === 1){
+        if (userId === 1){
             cellItem.style.backgroundColor = `rgba(204, 50, 50, 0.631)`;
         }
-        else if (currentPlayerIndex === 2){
+        else if (userId === 2){
             cellItem.style.backgroundColor = `rgba(40, 40, 165, 0.693)`;
         }
-        else if (currentPlayerIndex === 3){
+        else if (userId === 3){
             cellItem.style.backgroundColor = `rgb(0, 255, 0.001)`;
         }
-        else if (currentPlayerIndex === 4){
+        else if (userId === 4){
             cellItem.style.backgroundColor = `rgb(255, 255, 0.001)`;
         }
         //cellItem.style.pointerEvents = 'none';
@@ -456,7 +471,9 @@ connection.onmessage = function (evt) {
     else if (msg.type == "valid") {
         var parsedGame = JSON.parse(msg.game);
         if (parsedGame == game) {
-            highlightWord(JSON.parse(msg.firstLetter), JSON.parse(msg.secondLetter))
+            var userId = JSON.parse(msg.userId)
+            console.log("USER ID: " + userId)
+            highlightWord(JSON.parse(msg.firstLetter), JSON.parse(msg.secondLetter), userId)
         }
         
     }
