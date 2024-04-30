@@ -9,8 +9,8 @@ const highlightColors = [
     let currentPlayerIndex = 1;
 
 const startGameBtn = document.querySelector('.btnStart');
-const join = document.querySelector('.btn');
-const leave = document.querySelector('.btn1');
+const create = document.querySelector('.btn');
+const join = document.querySelector('.btn1');
 const lobby = document.querySelector('.lobby');
 const header = document.querySelector('header');
 const line = document.querySelector('.horizontal-line');
@@ -32,21 +32,16 @@ var userSubmit = document.getElementById("userSubmit");
 var userText = document.getElementById("userText");
 const getUserWindow = document.getElementById("getUsernameWindow");
 
-userSubmit.addEventListener("click", function() {
+userSubmit.addEventListener("click", function()
+{
     var data = {
         "username":userName.value
     }
     //userText.innerHTML = JSON.stringify(data);
     if(userName.value != null) {
         connection.send("username: " + userName.value);
+        // Username is checked and allows user to continue if username is unique and valid
     }
-    userName.classList.add('hidden');
-    userSubmit.classList.add('hidden');
-    userText.classList.add('hidden');
-    getUserWindow.classList.add('hidden');
-
-    lobby.classList.remove('hidden');
-
 })
     
 startGameBtn.addEventListener('click', () => {
@@ -130,8 +125,8 @@ fetch('/wordgrid')
     line.style.width = '65%';
     
 });
-join.addEventListener('click', () => {
-    if(player1.classList.contains('hidden')) {
+create.addEventListener('click', () => {
+    /* if(player1.classList.contains('hidden')) {
         player1.classList.remove('hidden');
         
     }
@@ -146,10 +141,11 @@ join.addEventListener('click', () => {
     else if (player4.classList.contains('hidden')) {
         player4.classList.remove('hidden');
         
-    }
+    } */
+    connection.send("Create new room");
 });
-leave.addEventListener('click', () => {
-    if (!player1.classList.contains('hidden')) {
+join.addEventListener('click', () => {
+    /* if (!player1.classList.contains('hidden')) {
         player1.classList.remove('hidden');
         
         }
@@ -162,8 +158,8 @@ leave.addEventListener('click', () => {
     }
     else if (!player4.classList.contains('hidden')) {
         player4.classList.remove('hidden');
-    }
-    
+    } */
+    connection.send("Join room");
 });
 
 
@@ -234,20 +230,6 @@ connection.onclose = function (evt) {
     document.getElementById("topMessage").innerHTML = "Server Offline"
 }
 
-/* connection.onmessage (evt) {
-    console.log("Message received from server: " + evt.data);
-    var message = JSON.parse(evt.data);
-    if(message.type == "promptUsername") {
-        var username = prompt(message.text);
-        if(username != null) {
-            connection.send(JSON.stringify({ type: "username", value: username}));
-        } 
-    }
-    else {
-        document.getElementById("messages").innerText += message.text + "\n";
-    }
-} */
-
 document.addEventListener('DOMContentLoaded', function() {
     const chatBox = document.getElementById('chatBox');
     const userInput = document.getElementById('userInput');
@@ -300,11 +282,46 @@ function highlightWord(firstLetter, secondLetter, playerColor) {
 
 
 connection.onmessage = function (evt) {
-    
-
+    var msg = evt.data;
     msg = JSON.parse(evt.data);
     console.log("Message Received: ", msg);
 
+    // Once input from user is given, lobby will appear if username is valid
+    if(msg.msg == "Username taken") {
+        userText.innerHTML = "Username taken, please try again";
+    }
+    else if(msg.msg == "Username valid") {
+        userName.classList.add('hidden');
+        userSubmit.classList.add('hidden');
+        userText.classList.add('hidden');
+        getUserWindow.classList.add('hidden');
+
+        lobby.classList.remove('hidden');
+    }
+
+    // Updates the leaderboard whenever a new player joins
+    if(msg.type == "leaderboard") {
+        try {
+            var leaderboard = JSON.parse(msg.msg);
+            console.log(leaderboard);
+            displayLeaderboard(leaderboard);
+        }
+        catch (error) {
+            console.error("Error parsing leaderboard JSON: " + error);
+        }
+    }
+    
+    // Updates the lobby player list whenever a new player joins
+    if(msg.type == "playerlist") {
+        try {
+            var playerlist = JSON.parse(msg.msg);
+            console.log(playerlist);
+            displayLobby(playerlist);
+        }
+        catch (error) {
+            console.error("Error parsing playerlist JSON: " + error);
+        }
+    }
     //console.log("Message received: " + msg);
 
     if (msg.type == "message") {
@@ -322,6 +339,28 @@ connection.onmessage = function (evt) {
 
 
     
+}
+
+function displayLeaderboard(leaderboard) {
+    var leaderboardElement = document.getElementById("leaderboard");
+    leaderboardElement.innerHTML = ""; // Removes all elements of the list
+
+    leaderboard.players.forEach(function(player) {
+        var listItem = document.createElement("li");
+        listItem.textContent = player.playerName + " | " + player.score; // The new list item contains the name and corresponding score
+        leaderboardElement.appendChild(listItem); // Adds the name and score to the list, which displays in the lobby
+    });
+}
+
+function displayLobby(playerlist) {
+    var lobbyElement = document.getElementById("lobbyPlayers");
+    lobbyElement.innerHTML = "";
+
+    playerlist.forEach(function(player) {
+        var listItem = document.createElement("li");
+        listItem.textContent = player.playerName;
+        lobbyElement.appendChild(listItem);
+    });
 }
 
 function toggleInstructions() {
