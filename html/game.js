@@ -20,6 +20,8 @@ const header2 = document.getElementById('game-title');
 const chatBox = document.querySelector('.chat');
 const wordGrid = document.getElementById('wordGrid');
 const wordBank = document.getElementById('wordBank');
+const wordGrid2 = document.getElementById('wordGrid');
+const wordBank2 = document.getElementById('wordBank');
 const container = document.getElementById('container');
 const lobby_players = document.querySelector('.lobby-players');
 const player1 = document.querySelector('.player1'); 
@@ -114,6 +116,104 @@ fetch('/wordgrid')
 })
 .catch(error => console.error('Error fetching word grid:', error));
 
+  // gets the wordbank sent from server
+    fetch('/wordbank')
+    .then(response => response.text())
+    .then(htmlWordBank => {
+        const wordBankDiv = document.getElementById('wordBank');
+        wordBankDiv.innerHTML = htmlWordBank;
+    })
+    .catch(error => console.error('Error fetching word bank:', error));
+    lobby.classList.add('hidden');
+    header.classList.add('hidden');
+    body.classList.add('remove-background');
+    header2.classList.remove('hidden');
+    chatBox.classList.remove('hidden');
+    wordGrid.classList.remove('hidden');
+    wordBank.classList.remove('hidden');
+    lobby.classList.add('scale');
+    container.classList.add('leader');
+    lobby_players.classList.add('hidden');
+    border.classList.add('hidden');
+
+    line.style.top = '50px';
+    line.style.width = '65%';
+    
+});
+
+startGameBtn2.addEventListener('click', () => {
+
+    // Fetch word grid data from server
+fetch('/wordgrid2')
+.then(response => response.text())
+.then(htmlGrid2 => {
+    //console.log(response.text())
+    //console.log(response)
+
+    let obj = {
+        type: "a"
+    };
+    connection.send(JSON.stringify(obj));
+
+    console.log(htmlGrid2)
+    console.log("testestset")
+    // Convert the HTML string to DOM elements
+    const tempDiv2 = document.createElement('div');
+    tempDiv2.innerHTML = htmlGrid2.trim();
+
+    // Create a new table element
+    const newTable2 = document.createElement('table');
+    newTable2.style.borderCollapse = 'collapse'; // Ensure borders collapse properly
+
+    // Create 20 rows and 20 columns in the table
+    for (let i = 0; i < 20; i++) {
+        const newRow = document.createElement('tr');
+        for (let j = 0; j < 20; j++) {
+            const newCell = document.createElement('td');
+            newCell.style.border = '1px solid black'; // Add border around each cell
+            newCell.style.textAlign = 'center'; // Center text horizontally
+            newCell.style.verticalAlign = 'middle'; // Center text vertically
+            newCell.style.width = '20px'; // Set width to 20px
+            newCell.style.height = '15px'; // Set height to 15px
+            newCell.style.cursor = 'pointer'; // Add cursor pointer
+            newCell.dataset.x = i;
+            newCell.dataset.y = j;
+            newCell.id = `cell-${i}-${j}`;
+            // Copy the text content of the corresponding cell in the grid
+            const gridCell = tempDiv2.querySelector(`tr:nth-child(${i + 1}) td:nth-child(${j + 1})`);
+            if (gridCell) {
+                newCell.textContent = gridCell.textContent;
+            }
+            newRow.appendChild(newCell); // Append the new cell to the new row
+        }
+        newTable2.appendChild(newRow); // Append the new row to the new table
+    }
+    console.log(newTable2)
+    // Insert the new table into the wordGrid element
+    document.getElementById('wordGrid').appendChild(newTable2);
+
+    // Add click event listener to table cells for highlighting
+    newTable.querySelectorAll('td').forEach(cell => {
+        cell.onclick = function() {
+            const currentPlayerClass = `highlight-color-player${currentPlayerIndex}`; // Determine current player's highlight class
+            if (!cell.classList.contains(currentPlayerClass)) {
+                cell.classList.add(currentPlayerClass); // Add highlight class for current player
+            } else {
+                cell.classList.remove(currentPlayerClass); // Remove highlight class for current player
+            }
+        };
+    });
+})
+.catch(error => console.error('Error fetching word grid:', error));
+
+  // gets the wordbank sent from server
+    fetch('/wordbank2')
+    .then(response => response.text())
+    .then(htmlWordBank2 => {
+        const wordBankDiv = document.getElementById('wordBank');
+        wordBankDiv.innerHTML = htmlWordBank2;
+    })
+    .catch(error => console.error('Error fetching word bank:', error));
     lobby.classList.add('hidden');
     header.classList.add('hidden');
     body.classList.add('remove-background');
@@ -344,13 +444,6 @@ function toggleInstructions() {
       }
 }
 
-    // gets the wordbank sent from server
-    fetch('/wordbank')
-    .then(response => response.text())
-    .then(htmlWordBank => {
-        const wordBankDiv = document.getElementById('wordBank');
-        wordBankDiv.innerHTML = htmlWordBank;
-    })
-    .catch(error => console.error('Error fetching word bank:', error));
+    
 
 
