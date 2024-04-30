@@ -9,6 +9,7 @@ const highlightColors = [
     let currentPlayerIndex = 1;
 
 const startGameBtn = document.querySelector('.btnStart');
+const startGameBtn2 = document.querySelector('.btnStart2');
 const join = document.querySelector('.btn');
 const leave = document.querySelector('.btn1');
 const lobby = document.querySelector('.lobby');
