@@ -13,6 +13,7 @@ const join = document.querySelector('.btn');
 const leave = document.querySelector('.btn1');
 const lobby = document.querySelector('.lobby');
 const header = document.querySelector('header');
+const line = document.querySelector('.horizontal-line');
 const body = document.querySelector('body');
 const table = document.querySelector('table');
 const header2 = document.getElementById('game-title');
@@ -21,26 +22,31 @@ const wordGrid = document.getElementById('wordGrid');
 const wordBank = document.getElementById('wordBank');
 const container = document.getElementById('container');
 const lobby_players = document.querySelector('.lobby-players');
-const border = document.querySelector('.border');
 const player1 = document.querySelector('.player1'); 
 const player2 = document.querySelector('.player2');
 const player3 = document.querySelector('.player3');
 const player4 = document.querySelector('.player4');
 
-const line = document.querySelector('.horizontal-line');
-
-var username = document.getElementById("username");
+var userName = document.getElementById("username");
 var userSubmit = document.getElementById("userSubmit");
 var userText = document.getElementById("userText");
+const getUserWindow = document.getElementById("getUsernameWindow");
 
 userSubmit.addEventListener("click", function() {
     var data = {
-        "username":username.value
+        "username":userName.value
     }
     //userText.innerHTML = JSON.stringify(data);
-    if(username.value != null) {
-        connection.send("username: " + username.value);
+    if(userName.value != null) {
+        connection.send("username: " + userName.value);
     }
+    userName.classList.add('hidden');
+    userSubmit.classList.add('hidden');
+    userText.classList.add('hidden');
+    getUserWindow.classList.add('hidden');
+
+    lobby.classList.remove('hidden');
+
 })
     
 startGameBtn.addEventListener('click', () => {
@@ -119,9 +125,9 @@ fetch('/wordgrid')
     container.classList.add('leader');
     lobby_players.classList.add('hidden');
     border.classList.add('hidden');
-    line.style.top = '80px';
-    line.style.width = '50%';
 
+    line.style.top = '50px';
+    line.style.width = '65%';
     
 });
 join.addEventListener('click', () => {

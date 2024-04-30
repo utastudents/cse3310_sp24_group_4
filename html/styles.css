@@ -1,41 +1,46 @@
 body {
-    display: flex;
+    display: relative;
     justify-content: center;
     align-items: center;
-    max-height: 100vh;
-    max-width: 100vw;
     background-image: url(background.jpg);
     background-size: cover;
     background-position: center;
     z-index: -1;
+    overflow: hidden;
     }
 body.remove-background {
     background-image: none;
     background-color: #FFFFF8;
 }
 #getUsernameWindow {
-    display: flex;
+    display: relative;
     align-items: center;
+    top: -50px;
     justify-content: center;
-    height: 100vh;
-    width: 100vw;
-    margin: 0px;
-    background-color: grey;
+    height: 99vh;
+    background-color: #f1eadb;
     background-size: cover;
     background-position: center;
     color: black;
-    z-index: 100;
+    z-index: 101;
     text-align: center;
 }
 #username {
+    position: relative;
+    top: 400px;
+    right: 100px;
     margin: 10px;
     border-radius: 8px;
     font-size: 40px;
 }
 #userSubmit {
+    position: relative;
+    top: 329px;
+    right: -225px;
     margin: 10px;
     border-radius: 8px;
     font-size: 36px;
+    cursor: pointer;
 }
 header {
     position: fixed;
@@ -54,8 +59,9 @@ header {
     position: fixed;
     text-align: center;
     top: 0px;
+    text-indent: 700px;
     font-size: 2.5em;
-    font-family: Elena, sans-serif;
+    font-family:'Times New Roman', Times, serif;
     font-style: bold;
 }
 .lobby {
@@ -63,7 +69,7 @@ header {
     width: 500px;
     height: 600px;
     top: 175px;
-    left: 650px;
+    left: 640px;
     background: transparent;
     border: 3px solid rgba(0, 0, 0, 0.5);
     border-radius: 20px;
@@ -72,6 +78,7 @@ header {
     display: flex;
     justify-content: center;
     align-items: center;
+    z-index: 50;
     }
 
 .lobby .players {
@@ -81,6 +88,7 @@ header {
     top: -20px;
     left: 20px;
     display: flex;
+    z-index: 50;
 }
 
 .btn {
@@ -159,12 +167,13 @@ header {
     height: auto;
     float: right;
     margin-left: 25px;
-    right: -825px;
-    top: -200px;
+    right: 125px;
+    top: 190px;
     transform: scale(1);
 }
 .leader {
-    right: -975px !important;
+    right: 80px !important;
+    top: 165px !important;
 }
 #wordGridContainer {
     position: relative;
@@ -176,6 +185,7 @@ header {
     right: -585px;
     top: -200px;
     transform: scale(1);
+    z-index: 200;
 }
 .leaderboard-row {
     position: relative;
@@ -198,7 +208,7 @@ header {
 .row {
     position: relative;
     display: block;
-    width: 100.5%;
+    width: 100.4%;
     height: 40px;
     border: 3px solid #000;
     border-top: 1px;
@@ -220,11 +230,9 @@ header {
     padding-left: 30px;
 }
 .Player3 {
-    /*background-color: rgba(50, 218, 50, 0.671);  row color for Player 3 */
     padding-left: 30px;
 }
 .Player4 {
-    /*background-color: rgba(243, 243, 54, 0.658);  row color for Player 4 */
     padding-left: 30px;
 }
 .words-found {
@@ -307,8 +315,9 @@ td.selected {
 
 #wordGrid {
     position: fixed;
-    right: 675px;
-    top: 150px;
+    right: 715px;
+    top: 200px;
+    z-index: 200;
 }
 
 .lobby-players {
@@ -340,9 +349,10 @@ td.selected {
 .horizontal-line {
     position: fixed;
     top: 100px;
-    height: 1.5px; /* Set the height of the line */
-    width: 100%; /* Set the width to span from left to right */
-    background-color: #000; /* Set the color of the line */
+    left: 0px;
+    height: 1.5px;
+    width: 100%;
+    background-color: #000;
     font-weight: bold;
 }
 .color-box {
@@ -394,6 +404,6 @@ td.selected {
 }
 #wordBank {
     position: relative;
-    left: -450px;
-    bottom: -17px;
+    left: 200px;
+    bottom: -75px;
 }
