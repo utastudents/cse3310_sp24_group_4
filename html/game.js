@@ -103,7 +103,7 @@ fetch('/wordgrid')
     // Add click event listener to table cells for highlighting
     newTable.querySelectorAll('td').forEach(cell => {
         cell.onclick = function() {
-            const currentPlayerClass = `highlight-color-player${currentPlayerIndex + 1}`; // Determine current player's highlight class
+            const currentPlayerClass = `highlight-color-player${currentPlayerIndex}`; // Determine current player's highlight class
             if (!cell.classList.contains(currentPlayerClass)) {
                 cell.classList.add(currentPlayerClass); // Add highlight class for current player
             } else {
@@ -287,17 +287,28 @@ function highlightWord(firstLetter, secondLetter, playerColor) {
 
     while (x !== X2 + changeX || y !== Y2 + changeY) {
         const cellItem = document.getElementById(`cell-${x}-${y}`);
-        const currentPlayerClass = `highlight-color-player${currentPlayerIndex + 1}`; 
+        const currentPlayerClass = `highlight-color-player${currentPlayerIndex}`; 
         if (!cellItem.classList.contains(currentPlayerClass)) {
             cellItem.classList.add(currentPlayerClass); 
         }
-        //cellItem.style.backgroundColor = `blue`        //change to corr player color
-        cellItem.style.pointerEvents = 'none';
+                //change to corr player color
+        if (currentPlayerIndex === 1){
+            cellItem.style.backgroundColor = `rgba(204, 50, 50, 0.631)`;
+        }
+        else if (currentPlayerIndex === 2){
+            cellItem.style.backgroundColor = `rgba(40, 40, 165, 0.693)`;
+        }
+        else if (currentPlayerIndex === 3){
+            cellItem.style.backgroundColor = `rgb(0, 255, 0.001)`;
+        }
+        else if (currentPlayerIndex === 4){
+            cellItem.style.backgroundColor = `rgb(255, 255, 0.001)`;
+        }
+        //cellItem.style.pointerEvents = 'none';
         x += changeX;
         y += changeY;
     }
 }
-
 
 connection.onmessage = function (evt) {
     
