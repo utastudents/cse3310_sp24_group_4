@@ -28,6 +28,20 @@ const player3 = document.querySelector('.player3');
 const player4 = document.querySelector('.player4');
 
 const line = document.querySelector('.horizontal-line');
+
+var username = document.getElementById("username");
+var userSubmit = document.getElementById("userSubmit");
+var userText = document.getElementById("userText");
+
+userSubmit.addEventListener("click", function() {
+    var data = {
+        "username":username.value
+    }
+    //userText.innerHTML = JSON.stringify(data);
+    if(username.value != null) {
+        connection.send("username: " + username.value);
+    }
+})
     
 startGameBtn.addEventListener('click', () => {
 
@@ -206,12 +220,27 @@ connection = new WebSocket(serverUrl);
 
 connection.onopen = function (evt) {
     console.log("open");
+    //connection.send(JSON.stringify({ type: "getUsername" }));
 }
 //if close then set topMessage to = Server Offline
 connection.onclose = function (evt) {
     console.log("close");
     document.getElementById("topMessage").innerHTML = "Server Offline"
 }
+
+/* connection.onmessage (evt) {
+    console.log("Message received from server: " + evt.data);
+    var message = JSON.parse(evt.data);
+    if(message.type == "promptUsername") {
+        var username = prompt(message.text);
+        if(username != null) {
+            connection.send(JSON.stringify({ type: "username", value: username}));
+        } 
+    }
+    else {
+        document.getElementById("messages").innerText += message.text + "\n";
+    }
+} */
 
 document.addEventListener('DOMContentLoaded', function() {
     const chatBox = document.getElementById('chatBox');
