@@ -71,6 +71,7 @@ public class App extends WebSocketServer {
   // private Instant startTime;
   // private Statistics stats;
   private static Board board;
+  private static Board board2;
 
   public App(int port) {
     super(new InetSocketAddress(port));
@@ -196,6 +197,8 @@ public class App extends WebSocketServer {
 
 
         String type = obj.get("type").getAsString();
+        int game = obj.get("game").getAsInt();
+        System.out.println(game);
         if (type.equals("letterSelection")) 
         {
           JsonArray f = obj.get("firstLetterCoordinate").getAsJsonArray();
@@ -217,21 +220,51 @@ public class App extends WebSocketServer {
 
           //check if first and second is valid word
             //first check if horizontal, diagnoal, veriticle
-          
-          char firstLetter = board.getBoard()[first[0]][first[1]];
-          char secondLetter = board.getBoard()[second[0]][second[1]];
-    
-          obj = new JsonObject();
-          
-          System.out.println("End: " + board.validateSelection(firstLetter, secondLetter, first, second));
-          if (board.validateSelection(firstLetter, secondLetter, first, second)) {
-            obj.addProperty("type", "valid");
-            obj.addProperty("firstLetter", Arrays.toString(first));
-            obj.addProperty("secondLetter", Arrays.toString(second));
-            broadcast(obj.toString());
-        } else {
-          obj.addProperty("type", "notValid");
+          if (game == 2) {
+            //board
+            char firstLetter = board.getBoard()[first[0]][first[1]];
+            char secondLetter = board.getBoard()[second[0]][second[1]];
+      
+            obj = new JsonObject();
+            
+            System.out.println("End: " + board.validateSelection(firstLetter, secondLetter, first, second));
+            //find which board to find validating words
+              //highlight based on a corresponding game (so not all board higlight same word)
+
+
+            if (board.validateSelection(firstLetter, secondLetter, first, second)) {
+              obj.addProperty("type", "valid");
+              obj.addProperty("firstLetter", Arrays.toString(first));
+              obj.addProperty("secondLetter", Arrays.toString(second));
+              obj.addProperty("game", game);
+              broadcast(obj.toString());
+            } else {
+              obj.addProperty("type", "notValid");
+            }
+          }
+          else {
+            //board2
+            char firstLetter = board2.getBoard()[first[0]][first[1]];
+            char secondLetter = board2.getBoard()[second[0]][second[1]];
+      
+            obj = new JsonObject();
+            
+            System.out.println("End: " + board2.validateSelection(firstLetter, secondLetter, first, second));
+            //find which board to find validating words
+              //highlight based on a corresponding game (so not all board higlight same word)
+
+
+            if (board2.validateSelection(firstLetter, secondLetter, first, second)) {
+              obj.addProperty("type", "valid");
+              obj.addProperty("firstLetter", Arrays.toString(first));
+              obj.addProperty("secondLetter", Arrays.toString(second));
+              obj.addProperty("game", game);
+              broadcast(obj.toString());
+            } else {
+              obj.addProperty("type", "notValid");
+            }
         }
+
         
     /* System.out
         .println("< " + Duration.between(startTime, Instant.now()).toMillis() + " " + "-" + " " + escape(message)); */
@@ -340,6 +373,7 @@ public class App extends WebSocketServer {
     H.start();
     System.out.println("http Server started on port: " + port);
     board = H.getBoard();
+    board2 = H.getBoard2();
 
     // create and start the websocket server
     port = 9104;

@@ -34,6 +34,7 @@ var userName = document.getElementById("username");
 var userSubmit = document.getElementById("userSubmit");
 var userText = document.getElementById("userText");
 const getUserWindow = document.getElementById("getUsernameWindow");
+var game;
 
 userSubmit.addEventListener("click", function()
 {
@@ -46,7 +47,10 @@ userSubmit.addEventListener("click", function()
         // Username is checked and allows user to continue if username is unique and valid
     }
 })
-    
+
+//game2
+//first button goes to wordgrid2
+//second button goes to wordgri
 startGameBtn.addEventListener('click', () => {
 
     // Fetch word grid data from server
@@ -55,6 +59,8 @@ fetch('/wordgrid')
 .then(htmlGrid => {
     //console.log(response.text())
     //console.log(response)
+    game = 2
+
 
     let obj = {
         type: "a"
@@ -137,6 +143,7 @@ fetch('/wordgrid')
     
 });
 
+//game1
 startGameBtn2.addEventListener('click', () => {
 
     // Fetch word grid data from server
@@ -145,6 +152,7 @@ fetch('/wordgrid2')
 .then(htmlGrid2 => {
     //console.log(response.text())
     //console.log(response)
+    game = 1;
 
     let obj = {
         type: "a"
@@ -287,11 +295,12 @@ wordGrid.addEventListener('click', function (event) {
             secondLetter = event.target;
             console.log(event.target.dataset.x)
             console.log(event.target.dataset.y)
-
+            
             let obj = {
                 type: "letterSelection",
                 firstLetterCoordinate: [firstLetter.dataset.x, firstLetter.dataset.y],
-                secondLetterCoordinate: [event.target.dataset.x, event.target.dataset.y]
+                secondLetterCoordinate: [event.target.dataset.x, event.target.dataset.y],
+                game: game
             };
             connection.send(JSON.stringify(obj));
 
@@ -445,8 +454,11 @@ connection.onmessage = function (evt) {
         chatBox.scrollTop = chatBox.scrollHeight;
     } 
     else if (msg.type == "valid") {
+        var parsedGame = JSON.parse(msg.game);
+        if (parsedGame == game) {
+            highlightWord(JSON.parse(msg.firstLetter), JSON.parse(msg.secondLetter))
+        }
         
-        highlightWord(JSON.parse(msg.firstLetter), JSON.parse(msg.secondLetter))
     }
 
 
