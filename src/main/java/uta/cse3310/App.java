@@ -163,6 +163,7 @@ public class App extends WebSocketServer {
     }
     else if(message.startsWith("username: ")) {
       String username = message.trim();
+      username = username.substring(10);
       System.out.println("Username received: " + username);
       if(lob.checkUniqueName(username) == false) {
         conn.send("Username: " + username + "already taken");
