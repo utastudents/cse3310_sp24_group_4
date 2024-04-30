@@ -4,6 +4,7 @@
 package uta.cse3310;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 public class Lobby {
     public ArrayList<GameRoom> rooms = new ArrayList<GameRoom>();
@@ -14,7 +15,7 @@ public class Lobby {
     public int playerId;
     public int lobbyId;
     public Score score;
-    public Leaderboard leaderboard;
+    public Leaderboard leaderboard = new Leaderboard(players);
 
     public Lobby(int lobbyId)
     {
@@ -52,16 +53,19 @@ public class Lobby {
         }
     }
 
-    public ArrayList<String> displayLobby()
+    public void displayLobby()
     {
         // Gives array list of all players currently in the lobby in a list for use
 
+        // Sorts players by connection id in case of leaderboard manipulation
+        Collections.sort(players, Player.playerIdCmp);
         // Testing purposes
         for(String s: playerNames) {
             System.out.println(s);
         }
-
-        return playerNames;
+        for(Player p : players) {
+            System.out.println(p.getPlayerName());
+        }
     }
 
     public void displayHelp()
@@ -75,10 +79,10 @@ public class Lobby {
             playerNames.add(input);
             Player newPlayer = new Player(input, playerId);
             players.add(newPlayer);
-            /* System.out.println(players);
+            // System.out.println(players);
             for(Player p : players) {
                 System.out.println(p);
-            } Testing Purposes */
+            } /* Testing Purposes */
             return "Valid username.";
         }
         else {
