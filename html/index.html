@@ -19,9 +19,11 @@
         <div class ="lobby hidden">
             <div class = "players">
                 <h2>Players:</h2>
+                <br>
+                <ul id="lobbyPlayers"></ul>
             </div>
-            <button class ="btn">Join Lobby</button>
-            <button class ="btn1">Leave Lobby</button>
+            <button class ="btn">Create Room</button>
+            <button class ="btn1">Join Room</button>
             <button class ="btnStart">Game 2</button>
             <button class ="btnStart2">Game 1</button>
             <button class="tutorialBtn" onclick="toggleInstructions()">Tutorial</button>
@@ -34,7 +36,8 @@
          <!-- Creates the Leaderboard-->
          <div id="container">
             <div class="leaderboard-row">
-                <div class="Player-name">LEADERBOARD</div><div class="score "></div>
+                <ul id="leaderboard"></ul>
+            <!-- <div class="Player-name">LEADERBOARD</div><div class="score "></div>
                 <ion-icon class = "ribbon" name="ribbon-outline"></ion-icon>
             </div>
             <div class="row">
@@ -51,7 +54,7 @@
             </div>
             <div class="row">
                 <div class="Player-name Player4">Player4</div></span><div class="words-found-name Player4">Words Found:</div><div class="words-found Player4">0</div><div class="score-name Player4">Points:</div><div class="score Player4">4</div>
-                <div class = "box4-color"></div>
+                <div class = "box4-color"></div> -->
             </div>
         </div>
         <div class = "wordGridContainer">

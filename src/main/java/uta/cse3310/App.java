@@ -149,6 +149,7 @@ public class App extends WebSocketServer {
   @Override
   public void onClose(WebSocket conn, int code, String reason, boolean remote) {
     System.out.println(conn + " has closed");
+    numOfPlayers -= 1;
     // Retrieve the game tied to the websocket connection
     Lobby lob = conn.getAttachment();
     lob = null;
@@ -166,11 +167,28 @@ public class App extends WebSocketServer {
       username = username.substring(10);
       System.out.println("Username received: " + username);
       if(lob.checkUniqueName(username) == false) {
-        conn.send("Username: " + username + "already taken");
+        JsonObject obj = new JsonObject();
+        obj.addProperty("msg", "Username taken");
+        conn.send(obj.toString());
       }
       else {
+        JsonObject obj = new JsonObject();
+        obj.addProperty("msg", "Username valid");
+        conn.send(obj.toString());
         lob.createName(username);
+        sendLeaderboard();
+        sendPlayerlist();
       }
+    }
+    else if(message.equals("Create new room")) {
+      lob.createGame(connectionId);
+      GameRoom gr = lob.rooms.get(1);
+      gr.displayPlayers();
+    }
+    else if(message.equals("Join room")) {
+      lob.joinRoom(connectionId, 1);
+      GameRoom gr = lob.rooms.get(1);
+      gr.displayPlayers();
     }
     else {
         JsonElement element = JsonParser.parseString(message);
@@ -240,10 +258,39 @@ public class App extends WebSocketServer {
 
     /* System.out
         .println("> " + Duration.between(startTime, Instant.now()).toMillis() + " " + "*" + " " + escape(jsonString)); */
+    
     broadcast(jsonString);
     }
   }
     
+  }
+
+  private void sendLeaderboard() {
+    GsonBuilder builder = new GsonBuilder();
+    Gson gson = builder.create();
+    lob.leaderboard.updateLeaderboard();
+    String leaderboardJson = gson.toJson(lob.leaderboard);
+
+    JsonObject obj = new JsonObject();
+    obj.addProperty("type", "leaderboard");
+    obj.addProperty("msg", leaderboardJson);
+    // System.out.println(leaderboardJson);
+    System.out.println(obj);
+    broadcast(obj.toString());
+  }
+
+  private void sendPlayerlist() {
+    GsonBuilder builder = new GsonBuilder();
+    Gson gson = builder.create();
+    lob.displayLobby();
+    String playersJson = gson.toJson(lob.players);
+
+    JsonObject obj = new JsonObject();
+    obj.addProperty("type", "playerlist");
+    obj.addProperty("msg", playersJson);
+    // System.out.println(playersJson);
+    System.out.println(obj);
+    broadcast(obj.toString());
   }
 
   @Override

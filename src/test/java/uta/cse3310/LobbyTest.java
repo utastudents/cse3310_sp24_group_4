@@ -28,7 +28,7 @@ public class LobbyTest extends TestCase
     {
         Lobby L = new Lobby(1);
         
-        L.createGame();
+        L.createGame(1);
 
         assertNotNull(L.rooms);
     }
