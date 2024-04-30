@@ -194,7 +194,7 @@ fetch('/wordgrid2')
     document.getElementById('wordGrid').appendChild(newTable2);
 
     // Add click event listener to table cells for highlighting
-    newTable.querySelectorAll('td').forEach(cell => {
+    newTable2.querySelectorAll('td').forEach(cell => {
         cell.onclick = function() {
             const currentPlayerClass = `highlight-color-player${currentPlayerIndex}`; // Determine current player's highlight class
             if (!cell.classList.contains(currentPlayerClass)) {
