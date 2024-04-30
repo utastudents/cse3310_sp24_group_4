@@ -65,7 +65,7 @@ public class App extends WebSocketServer {
   Lobby lob = null;
 
   public int numOfPlayers = 1;
-  public int playerId = 1;
+  // public int playerId = 1;
   public int lobbyId = 1;
   private int connectionId = 0;
   // private Instant startTime;
@@ -98,8 +98,8 @@ public class App extends WebSocketServer {
     if(lob != null && numOfPlayers < 20) {
       lob.numOfPlayers = numOfPlayers;
       numOfPlayers++;
-      lob.playerId = playerId;
-      playerId++;
+      lob.playerId = connectionId;
+      // playerId++;
       System.out.println("Found a Lobby.");
     }
     // No matches? Create a new Lobby.
@@ -107,8 +107,8 @@ public class App extends WebSocketServer {
       lob = new Lobby(lobbyId);
       lob.numOfPlayers = numOfPlayers;
       numOfPlayers++;
-      lob.playerId = playerId;
-      playerId++;
+      lob.playerId = connectionId;
+      // playerId++;
       lobbyId++;
       System.out.println("Creating a new Lobby.");
     }
@@ -160,7 +160,18 @@ public class App extends WebSocketServer {
     if (message.startsWith("msg: ")) {
         //System.out.println("testt: " + message);
         messaging.sendMsg(message);
-    } else {
+    }
+    else if(message.startsWith("username: ")) {
+      String username = message.trim();
+      System.out.println("Username received: " + username);
+      if(lob.checkUniqueName(username) == false) {
+        conn.send("Username: " + username + "already taken");
+      }
+      else {
+        lob.createName(username);
+      }
+    }
+    else {
         JsonElement element = JsonParser.parseString(message);
         JsonObject obj = element.getAsJsonObject();
 
@@ -203,8 +214,6 @@ public class App extends WebSocketServer {
           obj.addProperty("type", "notValid");
         }
         
-
-
     /* System.out
         .println("< " + Duration.between(startTime, Instant.now()).toMillis() + " " + "-" + " " + escape(message)); */
 
@@ -213,6 +222,9 @@ public class App extends WebSocketServer {
     GsonBuilder builder = new GsonBuilder();
     Gson gson = builder.create();
     UserEvent U = gson.fromJson(message, UserEvent.class);
+
+    /* String username = gson.fromJson(message, String.class);
+    lob.createName(username); */
 
     // Update the running time
     // stats.setRunningTime(Duration.between(startTime, Instant.now()).toSeconds());
