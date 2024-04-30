@@ -36,11 +36,15 @@ body.remove-background {
 #userSubmit {
     position: relative;
     top: 329px;
-    right: -225px;
+    right: -235px;
     margin: 10px;
     border-radius: 8px;
     font-size: 36px;
     cursor: pointer;
+}
+#userText {
+    position: relative;
+    font-size: 24px;
 }
 header {
     position: fixed;
@@ -80,6 +84,18 @@ header {
     align-items: center;
     z-index: 50;
     }
+
+#lobbyPlayers {
+    list-style-type: none;
+    text-decoration: none;
+}
+
+#leaderboard {
+    text-decoration: none;
+    list-style-type: none;
+    border: black solid 4px;
+    border-radius: 8px;
+}
 
 .lobby .players {
     position: fixed;
