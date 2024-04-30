@@ -73,8 +73,12 @@ public class Lobby {
         // (should be the first thing they are shown/allowed to do)
         if(checkUniqueName(input) == true) {
             playerNames.add(input);
-            Player newPlayer = new Player("input", playerId);
+            Player newPlayer = new Player(input, playerId);
             players.add(newPlayer);
+            /* System.out.println(players);
+            for(Player p : players) {
+                System.out.println(p);
+            } Testing Purposes */
             return "Valid username.";
         }
         else {
