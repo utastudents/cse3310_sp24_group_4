@@ -157,6 +157,18 @@ header {
     overflow: visible;
 
 }
+.btnStart2 {
+    position: relative;
+    right: 80px;
+    top: -330px;
+    font-Size: 1.5em;
+    border: 3px;
+    border: 2px solid #827717;
+    cursor: pointer;
+    z-index: 99;
+    overflow: visible;
+
+}
 .Player-name {
     position: relative;
     display: inline-block;

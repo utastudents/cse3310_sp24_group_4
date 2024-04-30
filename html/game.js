@@ -11,6 +11,7 @@ const highlightColors = [
 const startGameBtn = document.querySelector('.btnStart');
 const create = document.querySelector('.btn');
 const join = document.querySelector('.btn1');
+const startGameBtn2 = document.querySelector('.btnStart2');
 const lobby = document.querySelector('.lobby');
 const header = document.querySelector('header');
 const line = document.querySelector('.horizontal-line');
@@ -20,6 +21,8 @@ const header2 = document.getElementById('game-title');
 const chatBox = document.querySelector('.chat');
 const wordGrid = document.getElementById('wordGrid');
 const wordBank = document.getElementById('wordBank');
+const wordGrid2 = document.getElementById('wordGrid');
+const wordBank2 = document.getElementById('wordBank');
 const container = document.getElementById('container');
 const lobby_players = document.querySelector('.lobby-players');
 const player1 = document.querySelector('.player1'); 
@@ -98,7 +101,7 @@ fetch('/wordgrid')
     // Add click event listener to table cells for highlighting
     newTable.querySelectorAll('td').forEach(cell => {
         cell.onclick = function() {
-            const currentPlayerClass = `highlight-color-player${currentPlayerIndex + 1}`; // Determine current player's highlight class
+            const currentPlayerClass = `highlight-color-player${currentPlayerIndex}`; // Determine current player's highlight class
             if (!cell.classList.contains(currentPlayerClass)) {
                 cell.classList.add(currentPlayerClass); // Add highlight class for current player
             } else {
@@ -109,6 +112,104 @@ fetch('/wordgrid')
 })
 .catch(error => console.error('Error fetching word grid:', error));
 
+  // gets the wordbank sent from server
+    fetch('/wordbank')
+    .then(response => response.text())
+    .then(htmlWordBank => {
+        const wordBankDiv = document.getElementById('wordBank');
+        wordBankDiv.innerHTML = htmlWordBank;
+    })
+    .catch(error => console.error('Error fetching word bank:', error));
+    lobby.classList.add('hidden');
+    header.classList.add('hidden');
+    body.classList.add('remove-background');
+    header2.classList.remove('hidden');
+    chatBox.classList.remove('hidden');
+    wordGrid.classList.remove('hidden');
+    wordBank.classList.remove('hidden');
+    lobby.classList.add('scale');
+    container.classList.add('leader');
+    lobby_players.classList.add('hidden');
+    border.classList.add('hidden');
+
+    line.style.top = '50px';
+    line.style.width = '65%';
+    
+});
+
+startGameBtn2.addEventListener('click', () => {
+
+    // Fetch word grid data from server
+fetch('/wordgrid2')
+.then(response => response.text())
+.then(htmlGrid2 => {
+    //console.log(response.text())
+    //console.log(response)
+
+    let obj = {
+        type: "a"
+    };
+    connection.send(JSON.stringify(obj));
+
+    console.log(htmlGrid2)
+    console.log("testestset")
+    // Convert the HTML string to DOM elements
+    const tempDiv2 = document.createElement('div');
+    tempDiv2.innerHTML = htmlGrid2.trim();
+
+    // Create a new table element
+    const newTable2 = document.createElement('table');
+    newTable2.style.borderCollapse = 'collapse'; // Ensure borders collapse properly
+
+    // Create 20 rows and 20 columns in the table
+    for (let i = 0; i < 20; i++) {
+        const newRow = document.createElement('tr');
+        for (let j = 0; j < 20; j++) {
+            const newCell = document.createElement('td');
+            newCell.style.border = '1px solid black'; // Add border around each cell
+            newCell.style.textAlign = 'center'; // Center text horizontally
+            newCell.style.verticalAlign = 'middle'; // Center text vertically
+            newCell.style.width = '20px'; // Set width to 20px
+            newCell.style.height = '15px'; // Set height to 15px
+            newCell.style.cursor = 'pointer'; // Add cursor pointer
+            newCell.dataset.x = i;
+            newCell.dataset.y = j;
+            newCell.id = `cell-${i}-${j}`;
+            // Copy the text content of the corresponding cell in the grid
+            const gridCell = tempDiv2.querySelector(`tr:nth-child(${i + 1}) td:nth-child(${j + 1})`);
+            if (gridCell) {
+                newCell.textContent = gridCell.textContent;
+            }
+            newRow.appendChild(newCell); // Append the new cell to the new row
+        }
+        newTable2.appendChild(newRow); // Append the new row to the new table
+    }
+    console.log(newTable2)
+    // Insert the new table into the wordGrid element
+    document.getElementById('wordGrid').appendChild(newTable2);
+
+    // Add click event listener to table cells for highlighting
+    newTable2.querySelectorAll('td').forEach(cell => {
+        cell.onclick = function() {
+            const currentPlayerClass = `highlight-color-player${currentPlayerIndex}`; // Determine current player's highlight class
+            if (!cell.classList.contains(currentPlayerClass)) {
+                cell.classList.add(currentPlayerClass); // Add highlight class for current player
+            } else {
+                cell.classList.remove(currentPlayerClass); // Remove highlight class for current player
+            }
+        };
+    });
+})
+.catch(error => console.error('Error fetching word grid:', error));
+
+  // gets the wordbank sent from server
+    fetch('/wordbank2')
+    .then(response => response.text())
+    .then(htmlWordBank2 => {
+        const wordBankDiv = document.getElementById('wordBank');
+        wordBankDiv.innerHTML = htmlWordBank2;
+    })
+    .catch(error => console.error('Error fetching word bank:', error));
     lobby.classList.add('hidden');
     header.classList.add('hidden');
     body.classList.add('remove-background');
@@ -269,17 +370,28 @@ function highlightWord(firstLetter, secondLetter, playerColor) {
 
     while (x !== X2 + changeX || y !== Y2 + changeY) {
         const cellItem = document.getElementById(`cell-${x}-${y}`);
-        const currentPlayerClass = `highlight-color-player${currentPlayerIndex + 1}`; 
+        const currentPlayerClass = `highlight-color-player${currentPlayerIndex}`; 
         if (!cellItem.classList.contains(currentPlayerClass)) {
             cellItem.classList.add(currentPlayerClass); 
         }
-        //cellItem.style.backgroundColor = `blue`        //change to corr player color
-        cellItem.style.pointerEvents = 'none';
+                //change to corr player color
+        if (currentPlayerIndex === 1){
+            cellItem.style.backgroundColor = `rgba(204, 50, 50, 0.631)`;
+        }
+        else if (currentPlayerIndex === 2){
+            cellItem.style.backgroundColor = `rgba(40, 40, 165, 0.693)`;
+        }
+        else if (currentPlayerIndex === 3){
+            cellItem.style.backgroundColor = `rgb(0, 255, 0.001)`;
+        }
+        else if (currentPlayerIndex === 4){
+            cellItem.style.backgroundColor = `rgb(255, 255, 0.001)`;
+        }
+        //cellItem.style.pointerEvents = 'none';
         x += changeX;
         y += changeY;
     }
 }
-
 
 connection.onmessage = function (evt) {
     var msg = evt.data;
@@ -372,13 +484,6 @@ function toggleInstructions() {
       }
 }
 
-    // gets the wordbank sent from server
-    fetch('/wordbank')
-    .then(response => response.text())
-    .then(htmlWordBank => {
-        const wordBankDiv = document.getElementById('wordBank');
-        wordBankDiv.innerHTML = htmlWordBank;
-    })
-    .catch(error => console.error('Error fetching word bank:', error));
+    
 
 
