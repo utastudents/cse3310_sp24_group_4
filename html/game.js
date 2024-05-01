@@ -478,7 +478,9 @@ connection.onmessage = function (evt) {
         
     }
 
-
+    if ("version" in msg){
+      document.title = "Version " + msg.version;
+    }
     
 }
 
