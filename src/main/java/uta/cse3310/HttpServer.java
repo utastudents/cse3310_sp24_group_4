@@ -134,5 +134,8 @@ public class HttpServer {
     public Board getBoard() {
         return board;
     }
+    public Board getBoard2() {
+        return board2;
+    }
 
 }
