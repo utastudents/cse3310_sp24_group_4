@@ -67,6 +67,8 @@ public class App extends WebSocketServer {
   Lobby lob = null;
   Map<String, Integer> nameOrderMap = new LinkedHashMap<>();
 
+ public String version = System.getenv("VERSION");
+  
   public int numOfPlayers = 1;
   // public int playerId = 1;
   public int lobbyId = 1;
@@ -159,6 +161,10 @@ public class App extends WebSocketServer {
     jsonString = gson.toJson(lob);
     /* System.out
         .println("< " + Duration.between(startTime, Instant.now()).toMillis() + " " + "*" + " " + escape(jsonString)); */
+    JsonObject jsonObject = new JsonObject();
+    jsonObject.addProperty("version", version);
+    conn.send(jsonObject.toString());
+
     broadcast(jsonString);
 
   }
