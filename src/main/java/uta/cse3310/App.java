@@ -42,6 +42,7 @@ import static spark.Spark.*;
 
 import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -53,6 +54,10 @@ import org.java_websocket.server.WebSocketServer;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 
 public class App extends WebSocketServer {
   // All server(s) currently underway on this server stored here
@@ -60,11 +65,12 @@ public class App extends WebSocketServer {
   Lobby lob = null;
 
   public int numOfPlayers = 1;
-  public int playerId = 1;
+  // public int playerId = 1;
   public int lobbyId = 1;
   private int connectionId = 0;
   // private Instant startTime;
   // private Statistics stats;
+  private static Board board;
 
   public App(int port) {
     super(new InetSocketAddress(port));
@@ -92,8 +98,8 @@ public class App extends WebSocketServer {
     if(lob != null && numOfPlayers < 20) {
       lob.numOfPlayers = numOfPlayers;
       numOfPlayers++;
-      lob.playerId = playerId;
-      playerId++;
+      lob.playerId = connectionId;
+      // playerId++;
       System.out.println("Found a Lobby.");
     }
     // No matches? Create a new Lobby.
@@ -101,8 +107,8 @@ public class App extends WebSocketServer {
       lob = new Lobby(lobbyId);
       lob.numOfPlayers = numOfPlayers;
       numOfPlayers++;
-      lob.playerId = playerId;
-      playerId++;
+      lob.playerId = connectionId;
+      // playerId++;
       lobbyId++;
       System.out.println("Creating a new Lobby.");
     }
@@ -143,6 +149,7 @@ public class App extends WebSocketServer {
   @Override
   public void onClose(WebSocket conn, int code, String reason, boolean remote) {
     System.out.println(conn + " has closed");
+    numOfPlayers -= 1;
     // Retrieve the game tied to the websocket connection
     Lobby lob = conn.getAttachment();
     lob = null;
@@ -150,11 +157,81 @@ public class App extends WebSocketServer {
 
   @Override
   public void onMessage(WebSocket conn, String message) {
-    
+    //System.out.println(message);
     if (message.startsWith("msg: ")) {
         //System.out.println("testt: " + message);
         messaging.sendMsg(message);
-    } else {
+    }
+    else if(message.startsWith("username: ")) {
+      String username = message.trim();
+      username = username.substring(10);
+      System.out.println("Username received: " + username);
+      if(lob.checkUniqueName(username) == false) {
+        JsonObject obj = new JsonObject();
+        obj.addProperty("msg", "Username taken");
+        conn.send(obj.toString());
+      }
+      else {
+        JsonObject obj = new JsonObject();
+        obj.addProperty("msg", "Username valid");
+        conn.send(obj.toString());
+        lob.createName(username);
+        sendLeaderboard();
+        sendPlayerlist();
+      }
+    }
+    else if(message.equals("Create new room")) {
+      lob.createGame(connectionId);
+      GameRoom gr = lob.rooms.get(1);
+      gr.displayPlayers();
+    }
+    else if(message.equals("Join room")) {
+      lob.joinRoom(connectionId, 1);
+      GameRoom gr = lob.rooms.get(1);
+      gr.displayPlayers();
+    }
+    else {
+        JsonElement element = JsonParser.parseString(message);
+        JsonObject obj = element.getAsJsonObject();
+
+
+        String type = obj.get("type").getAsString();
+        if (type.equals("letterSelection")) 
+        {
+          JsonArray f = obj.get("firstLetterCoordinate").getAsJsonArray();
+          int[] first = new int[f.size()];
+
+          for (int i = 0; i < f.size(); i++) {
+              JsonElement e = f.get(i);
+              first[i] = e.getAsInt();
+          }
+
+          JsonArray s = obj.get("secondLetterCoordinate").getAsJsonArray();
+
+          int[] second = new int[s.size()];
+
+          for (int i = 0; i < s.size(); i++) {
+              JsonElement e = s.get(i);
+              second[i] = e.getAsInt();
+          }
+
+          //check if first and second is valid word
+            //first check if horizontal, diagnoal, veriticle
+          
+          char firstLetter = board.getBoard()[first[0]][first[1]];
+          char secondLetter = board.getBoard()[second[0]][second[1]];
+    
+          obj = new JsonObject();
+          
+          System.out.println("End: " + board.validateSelection(firstLetter, secondLetter, first, second));
+          if (board.validateSelection(firstLetter, secondLetter, first, second)) {
+            obj.addProperty("type", "valid");
+            obj.addProperty("firstLetter", Arrays.toString(first));
+            obj.addProperty("secondLetter", Arrays.toString(second));
+            broadcast(obj.toString());
+        } else {
+          obj.addProperty("type", "notValid");
+        }
         
     /* System.out
         .println("< " + Duration.between(startTime, Instant.now()).toMillis() + " " + "-" + " " + escape(message)); */
@@ -164,6 +241,9 @@ public class App extends WebSocketServer {
     GsonBuilder builder = new GsonBuilder();
     Gson gson = builder.create();
     UserEvent U = gson.fromJson(message, UserEvent.class);
+
+    /* String username = gson.fromJson(message, String.class);
+    lob.createName(username); */
 
     // Update the running time
     // stats.setRunningTime(Duration.between(startTime, Instant.now()).toSeconds());
@@ -178,9 +258,39 @@ public class App extends WebSocketServer {
 
     /* System.out
         .println("> " + Duration.between(startTime, Instant.now()).toMillis() + " " + "*" + " " + escape(jsonString)); */
+    
     broadcast(jsonString);
     }
+  }
     
+  }
+
+  private void sendLeaderboard() {
+    GsonBuilder builder = new GsonBuilder();
+    Gson gson = builder.create();
+    lob.leaderboard.updateLeaderboard();
+    String leaderboardJson = gson.toJson(lob.leaderboard);
+
+    JsonObject obj = new JsonObject();
+    obj.addProperty("type", "leaderboard");
+    obj.addProperty("msg", leaderboardJson);
+    // System.out.println(leaderboardJson);
+    System.out.println(obj);
+    broadcast(obj.toString());
+  }
+
+  private void sendPlayerlist() {
+    GsonBuilder builder = new GsonBuilder();
+    Gson gson = builder.create();
+    lob.displayLobby();
+    String playersJson = gson.toJson(lob.players);
+
+    JsonObject obj = new JsonObject();
+    obj.addProperty("type", "playerlist");
+    obj.addProperty("msg", playersJson);
+    // System.out.println(playersJson);
+    System.out.println(obj);
+    broadcast(obj.toString());
   }
 
   @Override
@@ -220,7 +330,7 @@ public class App extends WebSocketServer {
 
   public static void main(String[] args) {
     String HttpPort = System.getenv("HTTP_PORT");
-    int port = 9080;
+    int port = 9004;
     if (HttpPort!=null) {
       port = Integer.valueOf(HttpPort);
     }
@@ -229,9 +339,10 @@ public class App extends WebSocketServer {
     HttpServer H = new HttpServer(port, "./html");
     H.start();
     System.out.println("http Server started on port: " + port);
+    board = H.getBoard();
 
     // create and start the websocket server
-    port = 9180;
+    port = 9104;
     String WSPort = System.getenv("WEBSOCKET_PORT");
     if (WSPort!=null) {
       port = Integer.valueOf(WSPort);
@@ -245,52 +356,6 @@ public class App extends WebSocketServer {
 
     messaging = new Messaging(A);
 
-    
-    // Define endpoint to generate and return word grid
-    get("/wordgrid", (req, res) -> {
-      Board board = new Board();
-      // Generate the word grid
-      char[][] grid = board.getBoard();
-      // Convert grid to HTML string
-      String htmlGrid = convertGridToHTML(grid);
-      return htmlGrid;
-    });  
-
-    get("/wordbank", (req, res) -> {
-      Board board = new Board();
-      List<String> placedWords = board.getPlacedWords();
-      String htmlWordBank = convertWordBankToHTML(placedWords);
-      return htmlWordBank;
-    });
-  }
-
-  
-  private static String convertGridToHTML(char[][] grid) {
-    StringBuilder html = new StringBuilder("<table style=\"border-collapse: collapse; font-family: Arial, sans-serif;\">");
-    for (char[] row : grid) {
-        html.append("<tr>");
-        for (char cell : row) {
-            html.append("<td style=\"border: 1px solid black; width: 20px; height: 15px; text-align: center;\">").append(cell).append("</td>");
-        }
-        html.append("</tr>");
-    }
-    html.append("</table>");
-    return html.toString();
-  }
-
-  private static String convertWordBankToHTML(List<String> placedWords) {
-    StringBuilder html = new StringBuilder("<div id=\"wordBank\" style=\"border: 1px solid black; padding: 10px;max-width: 200px;\">");
-    html.append("<h2>Word Bank</h2>\n");
-    html.append("<ul>\n");
-
-    for (String word : placedWords) {
-        html.append("<li>").append(word).append("</li>\n");
-    }
-
-    html.append("</ul>\n");
-    html.append("</div>\n");
-
-    return html.toString();
   }
 
 }

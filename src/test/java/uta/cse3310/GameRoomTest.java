@@ -26,7 +26,7 @@ public class GameRoomTest extends TestCase
 
     public void testAssignColor()
     {
-        GameRoom G = new GameRoom(s, l);
+        GameRoom G = new GameRoom(1, s, l);
 
         // Case 1: All the available 4 colors to choose from
         assertEquals(G.assignColor("red"), "red");
@@ -43,7 +43,7 @@ public class GameRoomTest extends TestCase
 
     public void testGameStart()
     {
-        GameRoom G = new GameRoom(s, l);
+        GameRoom G = new GameRoom(1, s, l);
 
         // Case 1: There are 0 or 1 player(s) in the room
         assertFalse(G.gameStart(0));

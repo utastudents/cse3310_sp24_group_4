@@ -9,19 +9,117 @@ const highlightColors = [
     let currentPlayerIndex = 1;
 
 const startGameBtn = document.querySelector('.btnStart');
-const join = document.querySelector('.btn');
-const leave = document.querySelector('.btn1');
+const create = document.querySelector('.btn');
+const join = document.querySelector('.btn1');
+const startGameBtn2 = document.querySelector('.btnStart2');
 const lobby = document.querySelector('.lobby');
 const header = document.querySelector('header');
+const line = document.querySelector('.horizontal-line');
 const body = document.querySelector('body');
 const table = document.querySelector('table');
 const header2 = document.getElementById('game-title');
 const chatBox = document.querySelector('.chat');
 const wordGrid = document.getElementById('wordGrid');
 const wordBank = document.getElementById('wordBank');
+const wordGrid2 = document.getElementById('wordGrid');
+const wordBank2 = document.getElementById('wordBank');
 const container = document.getElementById('container');
+const lobby_players = document.querySelector('.lobby-players');
+const player1 = document.querySelector('.player1'); 
+const player2 = document.querySelector('.player2');
+const player3 = document.querySelector('.player3');
+const player4 = document.querySelector('.player4');
+
+var userName = document.getElementById("username");
+var userSubmit = document.getElementById("userSubmit");
+var userText = document.getElementById("userText");
+const getUserWindow = document.getElementById("getUsernameWindow");
+
+userSubmit.addEventListener("click", function()
+{
+    var data = {
+        "username":userName.value
+    }
+    //userText.innerHTML = JSON.stringify(data);
+    if(userName.value != null) {
+        connection.send("username: " + userName.value);
+        // Username is checked and allows user to continue if username is unique and valid
+    }
+})
     
 startGameBtn.addEventListener('click', () => {
+
+    // Fetch word grid data from server
+fetch('/wordgrid')
+.then(response => response.text())
+.then(htmlGrid => {
+    //console.log(response.text())
+    //console.log(response)
+
+    let obj = {
+        type: "a"
+    };
+    connection.send(JSON.stringify(obj));
+
+    console.log(htmlGrid)
+    console.log("testestset")
+    // Convert the HTML string to DOM elements
+    const tempDiv = document.createElement('div');
+    tempDiv.innerHTML = htmlGrid.trim();
+
+    // Create a new table element
+    const newTable = document.createElement('table');
+    newTable.style.borderCollapse = 'collapse'; // Ensure borders collapse properly
+
+    // Create 20 rows and 20 columns in the table
+    for (let i = 0; i < 20; i++) {
+        const newRow = document.createElement('tr');
+        for (let j = 0; j < 20; j++) {
+            const newCell = document.createElement('td');
+            newCell.style.border = '1px solid black'; // Add border around each cell
+            newCell.style.textAlign = 'center'; // Center text horizontally
+            newCell.style.verticalAlign = 'middle'; // Center text vertically
+            newCell.style.width = '20px'; // Set width to 20px
+            newCell.style.height = '15px'; // Set height to 15px
+            newCell.style.cursor = 'pointer'; // Add cursor pointer
+            newCell.dataset.x = i;
+            newCell.dataset.y = j;
+            newCell.id = `cell-${i}-${j}`;
+            // Copy the text content of the corresponding cell in the grid
+            const gridCell = tempDiv.querySelector(`tr:nth-child(${i + 1}) td:nth-child(${j + 1})`);
+            if (gridCell) {
+                newCell.textContent = gridCell.textContent;
+            }
+            newRow.appendChild(newCell); // Append the new cell to the new row
+        }
+        newTable.appendChild(newRow); // Append the new row to the new table
+    }
+    console.log(newTable)
+    // Insert the new table into the wordGrid element
+    document.getElementById('wordGrid').appendChild(newTable);
+
+    // Add click event listener to table cells for highlighting
+    newTable.querySelectorAll('td').forEach(cell => {
+        cell.onclick = function() {
+            const currentPlayerClass = `highlight-color-player${currentPlayerIndex}`; // Determine current player's highlight class
+            if (!cell.classList.contains(currentPlayerClass)) {
+                cell.classList.add(currentPlayerClass); // Add highlight class for current player
+            } else {
+                cell.classList.remove(currentPlayerClass); // Remove highlight class for current player
+            }
+        };
+    });
+})
+.catch(error => console.error('Error fetching word grid:', error));
+
+  // gets the wordbank sent from server
+    fetch('/wordbank')
+    .then(response => response.text())
+    .then(htmlWordBank => {
+        const wordBankDiv = document.getElementById('wordBank');
+        wordBankDiv.innerHTML = htmlWordBank;
+    })
+    .catch(error => console.error('Error fetching word bank:', error));
     lobby.classList.add('hidden');
     header.classList.add('hidden');
     body.classList.add('remove-background');
@@ -31,87 +129,164 @@ startGameBtn.addEventListener('click', () => {
     wordBank.classList.remove('hidden');
     lobby.classList.add('scale');
     container.classList.add('leader');
-});
-join.addEventListener('click', () => {
+    lobby_players.classList.add('hidden');
+    border.classList.add('hidden');
+
+    line.style.top = '50px';
+    line.style.width = '65%';
     
 });
-leave.addEventListener('click', () => {
+
+startGameBtn2.addEventListener('click', () => {
+
+    // Fetch word grid data from server
+fetch('/wordgrid2')
+.then(response => response.text())
+.then(htmlGrid2 => {
+    //console.log(response.text())
+    //console.log(response)
+
+    let obj = {
+        type: "a"
+    };
+    connection.send(JSON.stringify(obj));
+
+    console.log(htmlGrid2)
+    console.log("testestset")
+    // Convert the HTML string to DOM elements
+    const tempDiv2 = document.createElement('div');
+    tempDiv2.innerHTML = htmlGrid2.trim();
+
+    // Create a new table element
+    const newTable2 = document.createElement('table');
+    newTable2.style.borderCollapse = 'collapse'; // Ensure borders collapse properly
+
+    // Create 20 rows and 20 columns in the table
+    for (let i = 0; i < 20; i++) {
+        const newRow = document.createElement('tr');
+        for (let j = 0; j < 20; j++) {
+            const newCell = document.createElement('td');
+            newCell.style.border = '1px solid black'; // Add border around each cell
+            newCell.style.textAlign = 'center'; // Center text horizontally
+            newCell.style.verticalAlign = 'middle'; // Center text vertically
+            newCell.style.width = '20px'; // Set width to 20px
+            newCell.style.height = '15px'; // Set height to 15px
+            newCell.style.cursor = 'pointer'; // Add cursor pointer
+            newCell.dataset.x = i;
+            newCell.dataset.y = j;
+            newCell.id = `cell-${i}-${j}`;
+            // Copy the text content of the corresponding cell in the grid
+            const gridCell = tempDiv2.querySelector(`tr:nth-child(${i + 1}) td:nth-child(${j + 1})`);
+            if (gridCell) {
+                newCell.textContent = gridCell.textContent;
+            }
+            newRow.appendChild(newCell); // Append the new cell to the new row
+        }
+        newTable2.appendChild(newRow); // Append the new row to the new table
+    }
+    console.log(newTable2)
+    // Insert the new table into the wordGrid element
+    document.getElementById('wordGrid').appendChild(newTable2);
+
+    // Add click event listener to table cells for highlighting
+    newTable2.querySelectorAll('td').forEach(cell => {
+        cell.onclick = function() {
+            const currentPlayerClass = `highlight-color-player${currentPlayerIndex}`; // Determine current player's highlight class
+            if (!cell.classList.contains(currentPlayerClass)) {
+                cell.classList.add(currentPlayerClass); // Add highlight class for current player
+            } else {
+                cell.classList.remove(currentPlayerClass); // Remove highlight class for current player
+            }
+        };
+    });
+})
+.catch(error => console.error('Error fetching word grid:', error));
+
+  // gets the wordbank sent from server
+    fetch('/wordbank2')
+    .then(response => response.text())
+    .then(htmlWordBank2 => {
+        const wordBankDiv = document.getElementById('wordBank');
+        wordBankDiv.innerHTML = htmlWordBank2;
+    })
+    .catch(error => console.error('Error fetching word bank:', error));
+    lobby.classList.add('hidden');
+    header.classList.add('hidden');
+    body.classList.add('remove-background');
+    header2.classList.remove('hidden');
+    chatBox.classList.remove('hidden');
+    wordGrid.classList.remove('hidden');
+    wordBank.classList.remove('hidden');
+    lobby.classList.add('scale');
+    container.classList.add('leader');
+    lobby_players.classList.add('hidden');
+    border.classList.add('hidden');
+
+    line.style.top = '50px';
+    line.style.width = '65%';
+    
+});
+create.addEventListener('click', () => {
+    /* if(player1.classList.contains('hidden')) {
+        player1.classList.remove('hidden');
         
+    }
+    else if (player2.classList.contains('hidden')) {
+        player2.classList.remove('hidden');
+        
+    }
+    else if (player3.classList.contains('hidden')) {
+        player3.classList.remove('hidden');
+        
+    }
+    else if (player4.classList.contains('hidden')) {
+        player4.classList.remove('hidden');
+        
+    } */
+    connection.send("Create new room");
+});
+join.addEventListener('click', () => {
+    /* if (!player1.classList.contains('hidden')) {
+        player1.classList.remove('hidden');
+        
+        }
+    else if (!player2.classList.contains('hidden')) {
+        player2.classList.remove('hidden');
+
+    }
+    else if (!player3.classList.contains('hidden')) {
+        player3.classList.remove('hidden');
+    }
+    else if (!player4.classList.contains('hidden')) {
+        player4.classList.remove('hidden');
+    } */
+    connection.send("Join room");
 });
 
 
-// Fetch word grid data from server
-fetch('/wordgrid')
-    .then(response => response.text())
-    .then(htmlGrid => {
-        // Convert the HTML string to DOM elements
-        const tempDiv = document.createElement('div');
-        tempDiv.innerHTML = htmlGrid.trim();
 
-        // Create a new table element
-        const newTable = document.createElement('table');
-        newTable.style.borderCollapse = 'collapse'; // Ensure borders collapse properly
-
-        // Create 20 rows and 20 columns in the table
-        for (let i = 0; i < 35; i++) {
-            const newRow = document.createElement('tr');
-            for (let j = 0; j < 35; j++) {
-                const newCell = document.createElement('td');
-                newCell.style.border = '1px solid black'; // Add border around each cell
-                newCell.style.textAlign = 'center'; // Center text horizontally
-                newCell.style.verticalAlign = 'middle'; // Center text vertically
-                newCell.style.width = '20px'; // Set width to 20px
-                newCell.style.height = '15px'; // Set height to 15px
-                newCell.style.cursor = 'pointer'; // Add cursor pointer
-                newCell.dataset.x = i;
-                newCell.dataset.y = j;
-                // Copy the text content of the corresponding cell in the grid
-                const gridCell = tempDiv.querySelector(`tr:nth-child(${i + 1}) td:nth-child(${j + 1})`);
-                if (gridCell) {
-                    newCell.textContent = gridCell.textContent;
-                }
-                newRow.appendChild(newCell); // Append the new cell to the new row
-            }
-            newTable.appendChild(newRow); // Append the new row to the new table
-        }
-
-        // Insert the new table into the wordGrid element
-        document.getElementById('wordGrid').appendChild(newTable);
-
-        // Add click event listener to table cells for highlighting
-        newTable.querySelectorAll('td').forEach(cell => {
-            cell.onclick = function() {
-                const currentPlayerClass = `highlight-color-player${currentPlayerIndex + 1}`; // Determine current player's highlight class
-                if (!cell.classList.contains(currentPlayerClass)) {
-                    cell.classList.add(currentPlayerClass); // Add highlight class for current player
-                } else {
-                    cell.classList.remove(currentPlayerClass); // Remove highlight class for current player
-                }
-            };
-        });
-    })
-    .catch(error => console.error('Error fetching word grid:', error));
 
 let firstLetter = null;
 let secondLetter = null;
 wordGrid.addEventListener('click', function (event) {
-    
+
+        
+
         if (!firstLetter) {
+            console.log("a")
+            console.log(wordGrid)
+
             console.log(event.target)
             console.log(event.target.dataset.x)
             console.log(event.target.dataset.y)
 
             firstLetter = event.target;
 
-            
 
-            //sendLetterSelection(firstLetter.dataset.x, firstLetter.dataset.y);
-            //event.target.classList.add('selected'); // Visually mark the item
         } else if (!secondLetter && event.target !== firstLetter) {
             secondLetter = event.target;
             console.log(event.target.dataset.x)
             console.log(event.target.dataset.y)
-            //sendWordSelection(firstLetter, secondLetter);
 
             let obj = {
                 type: "letterSelection",
@@ -124,8 +299,6 @@ wordGrid.addEventListener('click', function (event) {
                 firstLetter = null;
                 secondLetter = null;
             }
-            
-            //resetSelections();
         }
     
 });
@@ -144,12 +317,13 @@ for (let node of document.querySelectorAll("td")){
 var connection = null;
 
 var serverUrl;
-serverUrl = "ws://" + window.location.hostname + ":9180";
+serverUrl = "ws://" + window.location.hostname + ":9104";
 // Create the connection with the server
 connection = new WebSocket(serverUrl);
 
 connection.onopen = function (evt) {
     console.log("open");
+    //connection.send(JSON.stringify({ type: "getUsername" }));
 }
 //if close then set topMessage to = Server Offline
 connection.onclose = function (evt) {
@@ -181,68 +355,124 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 
+function highlightWord(firstLetter, secondLetter, playerColor) {
+
+    const X1 = firstLetter[0];
+    const Y1 = firstLetter[1];
+    const X2 = secondLetter[0];
+    const Y2 = secondLetter[1];
+
+    const changeX = X1 === X2 ? 0 : (X2 > X1 ? 1 : -1);
+    const changeY = Y1 === Y2 ? 0 : (Y2 > Y1 ? 1 : -1);
+
+    let x = X1;
+    let y = Y1;
+
+    while (x !== X2 + changeX || y !== Y2 + changeY) {
+        const cellItem = document.getElementById(`cell-${x}-${y}`);
+        const currentPlayerClass = `highlight-color-player${currentPlayerIndex}`; 
+        if (!cellItem.classList.contains(currentPlayerClass)) {
+            cellItem.classList.add(currentPlayerClass); 
+        }
+                //change to corr player color
+        if (currentPlayerIndex === 1){
+            cellItem.style.backgroundColor = `rgba(204, 50, 50, 0.631)`;
+        }
+        else if (currentPlayerIndex === 2){
+            cellItem.style.backgroundColor = `rgba(40, 40, 165, 0.693)`;
+        }
+        else if (currentPlayerIndex === 3){
+            cellItem.style.backgroundColor = `rgb(0, 255, 0.001)`;
+        }
+        else if (currentPlayerIndex === 4){
+            cellItem.style.backgroundColor = `rgb(255, 255, 0.001)`;
+        }
+        //cellItem.style.pointerEvents = 'none';
+        x += changeX;
+        y += changeY;
+    }
+}
+
 connection.onmessage = function (evt) {
-    var msg;
-    msg = evt.data;
+    var msg = evt.data;
+    msg = JSON.parse(evt.data);
+    console.log("Message Received: ", msg);
+
+    // Once input from user is given, lobby will appear if username is valid
+    if(msg.msg == "Username taken") {
+        userText.innerHTML = "Username taken, please try again";
+    }
+    else if(msg.msg == "Username valid") {
+        userName.classList.add('hidden');
+        userSubmit.classList.add('hidden');
+        userText.classList.add('hidden');
+        getUserWindow.classList.add('hidden');
+
+        lobby.classList.remove('hidden');
+    }
+
+    // Updates the leaderboard whenever a new player joins
+    if(msg.type == "leaderboard") {
+        try {
+            var leaderboard = JSON.parse(msg.msg);
+            console.log(leaderboard);
+            displayLeaderboard(leaderboard);
+        }
+        catch (error) {
+            console.error("Error parsing leaderboard JSON: " + error);
+        }
+    }
+    
+    // Updates the lobby player list whenever a new player joins
+    if(msg.type == "playerlist") {
+        try {
+            var playerlist = JSON.parse(msg.msg);
+            console.log(playerlist);
+            displayLobby(playerlist);
+        }
+        catch (error) {
+            console.error("Error parsing playerlist JSON: " + error);
+        }
+    }
     //console.log("Message received: " + msg);
-    if (msg.startsWith('"msg:')) {
+
+    if (msg.type == "message") {
         // If yes, remove the prefix
-        msg = msg.substring(6, msg.length -1);
+        msg = msg.msg.substring(4, msg.msg.length);
         const msgElement = document.createElement('div');
         msgElement.textContent = msg;       //text content of the new div
         chatBox.appendChild(msgElement);        //appending the new message to message history
         chatBox.scrollTop = chatBox.scrollHeight;
+    } 
+    else if (msg.type == "valid") {
+        
+        highlightWord(JSON.parse(msg.firstLetter), JSON.parse(msg.secondLetter))
     }
 
-    /*
-    
-    const msgElement = document.createElement('div');
-    msgElement.textContent = msg;       //text content of the new div
-    chatBox.appendChild(msgElement);        //appending the new message to message history
-    chatBox.scrollTop = chatBox.scrollHeight;
-    
-    //converting msg to obj
-    const obj = JSON.parse(msg);*/
-
-    /*
-    //if setting up players
-    if ('YouAre' in obj) {
-        if (obj.YouAre == "XPLAYER") {
-            idx = 0;
-        }
-        else {
-            idx = 1;
-        }
-
-        gameid = obj.GameId;
-    }
-    //check if our turn
-    else if ('CurrentTurn' in obj) {
-        // only pay attention to this game
-        if (gameid == obj.GameId) {
-            // button state to display values
-
-            document.getElementById("b1").value = ButtonStateToDisplay.get(obj.Button[0]);
-            document.getElementById("b2").value = ButtonStateToDisplay.get(obj.Button[1]);
-            document.getElementById("b3").value = ButtonStateToDisplay.get(obj.Button[2]);
-            document.getElementById("b4").value = ButtonStateToDisplay.get(obj.Button[3]);
-            document.getElementById("b5").value = ButtonStateToDisplay.get(obj.Button[4]);
-            document.getElementById("b6").value = ButtonStateToDisplay.get(obj.Button[5]);
-            document.getElementById("b7").value = ButtonStateToDisplay.get(obj.Button[6]);
-            document.getElementById("b8").value = ButtonStateToDisplay.get(obj.Button[7]);
-            document.getElementById("b9").value = ButtonStateToDisplay.get(obj.Button[8]);
-
-
-            // displaying MSG FROM BACKEND HERE
-            document.getElementById("topMessage").innerHTML = obj.Msg[idx];
-            document.getElementById("bottomMessage").innerHTML = "Number of games: " + obj.NumGames + "\nNumber of games in progress: " + obj.CurrentGames + "\nX wins: " + obj.XWon + "\nY wins: " + obj.YWon + "\nDraws: " + obj.Draw;
-        }
-    }
-    else if('CurrentGames' in obj) {
-        document.getElementById("bottomMessage").innerHTML = "Number of games: " + obj.NumGames + "\nNumber of games in progress: " + obj.CurrentGames + "\nX wins: " + obj.XWon + "\nY wins: " + obj.YWon + "\nDraws: " + obj.Draw;
-    }*/
 
     
+}
+
+function displayLeaderboard(leaderboard) {
+    var leaderboardElement = document.getElementById("leaderboard");
+    leaderboardElement.innerHTML = ""; // Removes all elements of the list
+
+    leaderboard.players.forEach(function(player) {
+        var listItem = document.createElement("li");
+        listItem.textContent = player.playerName + " | " + player.score; // The new list item contains the name and corresponding score
+        leaderboardElement.appendChild(listItem); // Adds the name and score to the list, which displays in the lobby
+    });
+}
+
+function displayLobby(playerlist) {
+    var lobbyElement = document.getElementById("lobbyPlayers");
+    lobbyElement.innerHTML = "";
+
+    playerlist.forEach(function(player) {
+        var listItem = document.createElement("li");
+        listItem.textContent = player.playerName;
+        lobbyElement.appendChild(listItem);
+    });
 }
 
 function toggleInstructions() {
@@ -254,170 +484,6 @@ function toggleInstructions() {
       }
 }
 
-    // gets the wordbank sent from server
-    fetch('/wordbank')
-    .then(response => response.text())
-    .then(htmlWordBank => {
-        const wordBankDiv = document.getElementById('wordBank');
-        wordBankDiv.innerHTML = htmlWordBank;
-    })
-    .catch(error => console.error('Error fetching word bank:', error));
-
-    let firstCell = null;
-let secondCell = null;
-
-wordGrid.forEach((row, rowIndex) => {
-    row.forEach((cell, colIndex) => {
-        cell.onclick = function() {
-            if (!firstCell) {
-                // First cell clicked
-                firstCell = [rowIndex, colIndex];
-            } else if (!secondCell) {
-                // Second cell clicked
-                secondCell = [rowIndex, colIndex];
-                // Process the selected cells
-                processSelectedCells();
-            } else {
-                // Reset if more than two cells clicked
-                firstCell = null;
-                secondCell = null;
-            }
-        };
-    });
-});
-
-function processSelectedCells() {
-    // Ensure both cells are selected
-    if (!firstCell || !secondCell) return;
-
-    // Ensure cells are not the same
-    if (firstCell[0] === secondCell[0] && firstCell[1] === secondCell[1]) return;
-
-    // Determine the direction of selection (horizontal, vertical, or diagonal)
-    const direction = determineSelectionDirection(firstCell, secondCell);
-
-    // Extract letters between the two selected cells
-    const letters = extractLettersBetweenCells(firstCell, secondCell, direction);
-
-    // Concatenate letters to form a word
-    const selectedWord = letters.join('').toUpperCase();
-
-    // Check if the selected word exists in the word bank
-    if (wordBank.includes(selectedWord)) {
-        // Highlight all cells between the two clicked cells
-        highlightCellsBetween(firstCell, secondCell, direction);
-    }
-
-    // Reset selected cells
-    firstCell = null;
-    secondCell = null;
-}
-
-function determineSelectionDirection(firstCell, secondCell) {
-    const [row1, col1] = firstCell;
-    const [row2, col2] = secondCell;
-
-    if (row1 === row2) {
-        // Horizontal selection
-        return 'horizontal';
-    } else if (col1 === col2) {
-        // Vertical selection
-        return 'vertical';
-    } else if (Math.abs(row2 - row1) === Math.abs(col2 - col1)) {
-        // Diagonal selection
-        return 'diagonal';
-    } else {
-        // Invalid selection
-        return 'invalid';
-    }
-}
-
-function extractLettersBetweenCells(firstCell, secondCell, direction) {
-    const [row1, col1] = firstCell;
-    const [row2, col2] = secondCell;
-    const letters = [];
-
-    if (direction === 'horizontal') {
-        // Extract letters horizontally
-        const startCol = Math.min(col1, col2);
-        const endCol = Math.max(col1, col2);
-        for (let col = startCol + 1; col < endCol; col++) {
-            letters.push(wordGrid[row1][col].textContent);
-        }
-    } else if (direction === 'vertical') {
-        // Extract letters vertically
-        const startRow = Math.min(row1, row2);
-        const endRow = Math.max(row1, row2);
-        for (let row = startRow + 1; row < endRow; row++) {
-            letters.push(wordGrid[row][col1].textContent);
-        }
-    } else if (direction === 'diagonal') {
-        // Extract letters diagonally
-        const deltaRow = row2 > row1 ? 1 : -1;
-        const deltaCol = col2 > col1 ? 1 : -1;
-        let currentRow = row1 + deltaRow;
-        let currentCol = col1 + deltaCol;
-        while (currentRow !== row2 && currentCol !== col2) {
-            letters.push(wordGrid[currentRow][currentCol].textContent);
-            currentRow += deltaRow;
-            currentCol += deltaCol;
-        }
-    }
-
-    return letters;
-}
-
-function highlightCellsBetween(firstCell, secondCell, direction) {
-    const [row1, col1] = firstCell;
-    const [row2, col2] = secondCell;
-
-    if (direction === 'horizontal') {
-        const startCol = Math.min(col1, col2);
-        const endCol = Math.max(col1, col2);
-        for (let col = startCol + 1; col < endCol; col++) {
-            wordGrid[row1][col].classList.add('highlighted');
-        }
-    } else if (direction === 'vertical') {
-        const startRow = Math.min(row1, row2);
-        const endRow = Math.max(row1, row2);
-        for (let row = startRow + 1; row < endRow; row++) {
-            wordGrid[row][col1].classList.add('highlighted');
-        }
-    } else if (direction === 'diagonal') {
-        const deltaRow = row2 > row1 ? 1 : -1;
-        const deltaCol = col2 > col1 ? 1 : -1;
-        let currentRow = row1 + deltaRow;
-        let currentCol = col1 + deltaCol;
-        while (currentRow !== row2 && currentCol !== col2) {
-            wordGrid[currentRow][currentCol].classList.add('highlighted');
-            currentRow += deltaRow;
-            currentCol += deltaCol;
-        }
-    }
-}
+    
 
 
-/*
-var idx = -1;
-var gameid = -1;
-class UserEvent {
-    Button = -1;
-    PlayerIdx = 0;
-    GameId = 0;
-}
-var connection = null;
-
-var serverUrl;
-serverUrl = "ws://" + window.location.hostname + ":9880";
-// Create the connection with the server
-connection = new WebSocket(serverUrl);
-
-connection.onopen = function (evt) {
-    console.log("open");
-}
-connection.onclose = function (evt) {
-    console.log("close");
-    document.getElementById("topMessage").innerHTML = "Server Offline"
-}    
-
-}*/

@@ -4,6 +4,7 @@
 package uta.cse3310;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 public class Lobby {
     public ArrayList<GameRoom> rooms = new ArrayList<GameRoom>();
@@ -14,54 +15,82 @@ public class Lobby {
     public int playerId;
     public int lobbyId;
     public Score score;
-    public Leaderboard leaderboard;
+    public Leaderboard leaderboard = new Leaderboard(players);
 
     public Lobby(int lobbyId)
     {
         this.lobbyId = lobbyId;
     }
 
-    public void createGame()
+    public void createGame(int connId)
     {
         // Creates a game lobby where players can join
         GameRoom GR = null;
-        GR = new GameRoom(score, leaderboard);
+        GR = new GameRoom(lobbyId, score, leaderboard);
         GR.GameId += 1;
         // Add the first player
         GR.PlayerNum = PlayerType.ONE;
         GR.playerCount = 1;
+        for(Player p : players) {
+            if(p.playerId == connId) {
+                GR.hostId = p.playerId;
+                GR.players.add(p);
+                players.remove(p);
+            }
+        }
         rooms.add(GR);
         System.out.println("Creating a new Game Room");
     }
 
     // roomId should be from 0-4 where the button to join will be dependent on the order of where it is on the list
     // of rooms and will send the information to that room only
-    public void joinRoom(int roomId) {
+    public void joinRoom(int connId, int roomId) {
         if(rooms.isEmpty() == false && (roomId >= 0 && roomId <= 4)) {
             GameRoom targetRoom = rooms.get(roomId);
             targetRoom.playerCount += 1;
             if(targetRoom.playerCount == 2) {
                 targetRoom.PlayerNum = PlayerType.TWO;
+                for(Player p : players) {
+                    if(p.getPlayerId() == connId) {
+                        players.remove(p);
+                        targetRoom.players.add(p);
+                    }
+                }
             }
             else if(targetRoom.playerCount == 3) {
                 targetRoom.PlayerNum = PlayerType.THREE;
+                for(Player p : players) {
+                    if(p.getPlayerId() == connId) {
+                        players.remove(p);
+                        targetRoom.players.add(p);
+                    }
+                }
             }
             else if(targetRoom.playerCount == 4) {
                 targetRoom.PlayerNum = PlayerType.FOUR;
+                for(Player p : players) {
+                    if(p.getPlayerId() == connId) {
+                        players.remove(p);
+                        targetRoom.players.add(p);
+                    }
+                }
             }
         }
     }
 
-    public ArrayList<String> displayLobby()
+    public void displayLobby()
     {
         // Gives array list of all players currently in the lobby in a list for use
 
+        // Sorts players by connection id in case of leaderboard manipulation
+        Collections.sort(players, Player.playerIdCmp);
         // Testing purposes
         for(String s: playerNames) {
             System.out.println(s);
         }
-
-        return playerNames;
+        for(Player p : players) {
+            System.out.println(p.getPlayerName());
+        }
     }
 
     public void displayHelp()
@@ -73,8 +102,12 @@ public class Lobby {
         // (should be the first thing they are shown/allowed to do)
         if(checkUniqueName(input) == true) {
             playerNames.add(input);
-            Player newPlayer = new Player("input", playerId);
+            Player newPlayer = new Player(input, playerId);
             players.add(newPlayer);
+            // System.out.println(players);
+            for(Player p : players) {
+                System.out.println(p);
+            } /* Testing Purposes */
             return "Valid username.";
         }
         else {

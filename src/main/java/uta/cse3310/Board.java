@@ -28,7 +28,7 @@ public class Board {
         try {
             return Integer.parseInt(gridSize);
         } catch (NumberFormatException e) {
-            return 35;  // Default size if environment variable is not set
+            return 20;  // Default size if environment variable is not set
         }
     }
 
@@ -47,7 +47,7 @@ public class Board {
         try (BufferedReader reader = new BufferedReader(new FileReader(filename))) {
             String line;
             while ((line = reader.readLine()) != null) {
-                lines.add(line.trim());
+                lines.add(line.trim().toUpperCase());
             }
             Collections.shuffle(lines);
             wordBank.addAll(lines.subList(0, Math.min(numberOfWords, lines.size())));
@@ -111,7 +111,7 @@ public class Board {
         if (positions.isEmpty()) {
             for (int i = 0; i < size; i++) {
                 for (int j = 0; j < size; j++) {
-                    for (int orientation = 0; orientation < 3; orientation++) {
+                    for (int orientation = 0; orientation < 4; orientation++) {
                         if (canPlaceWord(word, i, j, orientation)) {
                             positions.add(new int[]{i, j, orientation});
                         }
@@ -128,32 +128,54 @@ public class Board {
 
     private boolean canPlaceWord(String word, int row, int col, int orientation) {
         int wordLength = word.length();
-        if (orientation == 0 && row + wordLength > size) return false;
-        if (orientation == 1 && col + wordLength > size) return false;
-        if (orientation == 2 && (row + wordLength > size || col + wordLength > size)) return false;
-
+        if (orientation == 0 && col + wordLength > size) return false; 
+        if (orientation == 1 && row + wordLength > size) return false; 
+        if (orientation == 2 && (row + wordLength > size || col + wordLength > size)) return false; 
+        if (orientation == 3 && row - wordLength < 0) return false; // Vertical up
+    
         for (int i = 0; i < wordLength; i++) {
-            int x = row + (orientation == 0 ? i : 0);
-            int y = col + (orientation == 1 ? i : 0);
-            if (orientation == 2) {
+            int x = row;
+            int y = col;
+    
+            if (orientation == 0) {  // Horizontal
+                y = col + i;
+            } else if (orientation == 1) {  // Vertical down
+                x = row + i;
+            } else if (orientation == 2) {  // Diagonal
                 x = row + i;
                 y = col + i;
+            } else if (orientation == 3) {  // Vertical up
+                x = row - i;
             }
+    
             if (board[x][y] != '-' && board[x][y] != word.charAt(i)) {
                 return false;
             }
         }
         return true;
     }
-
+    
+    
     private void placeWord(String word, int row, int col, int orientation) {
+        word = word.toUpperCase();
         for (int i = 0; i < word.length(); i++) {
-            int x = row + (orientation == 0 ? i : 0);
-            int y = col + (orientation == 1 ? i : 0);
-            if (orientation == 2) {
+            int x = row;
+            int y = col;
+    
+            if (orientation == 0) {  // Horizontal
+                x = row;
+                y = col + i;
+            } else if (orientation == 1) {  // Vertical down
+                x = row + i;
+                y = col;
+            } else if (orientation == 2) {  // Diagonal
                 x = row + i;
                 y = col + i;
+            } else if (orientation == 3) {  // Vertical up
+                x = row - i;
+                y = col;
             }
+    
             board[x][y] = word.charAt(i);
         }
     }
@@ -184,4 +206,245 @@ public class Board {
     public List<String> getPlacedWords() {
         return wordBank;
     }
+
+     
+    public boolean validateSelection(char firstLetter, char secondLetter, int[] firstLetterCoordinate, int[] secondLetterCoordinate){
+		if(checkHorizontal(firstLetterCoordinate,secondLetterCoordinate)){
+            System.out.println("horizontal");
+			return validate(firstLetterCoordinate,secondLetterCoordinate,"horizontal");
+        }
+		else if(checkVertical(firstLetterCoordinate,secondLetterCoordinate)){
+            System.out.println("vertical");
+            return validate(firstLetterCoordinate,secondLetterCoordinate,"vertical");
+        }
+		else if(checkDiagonal(firstLetterCoordinate,secondLetterCoordinate)){
+            System.out.println("diagonal");
+            return validate(firstLetterCoordinate, secondLetterCoordinate, "diagonal");
+        }
+		return false;
+	}
+
+    public boolean validate(int[] firstLetterCoordinate, int[] secondLetterCoordinate, String direction){
+        int length;
+        int i;
+        int j;
+        StringBuilder sb = new StringBuilder();
+        String word = new String();
+        switch(direction){
+            case "horizontal":
+                if(firstLetterCoordinate[1] > secondLetterCoordinate[1]){
+                    length = firstLetterCoordinate[1]-secondLetterCoordinate[1];
+                    for(i = 0; i <= length; i++)
+                        sb.append(this.board[(int)firstLetterCoordinate[0]][(int)firstLetterCoordinate[1]-i]);
+                    word = sb.toString();
+                    sb.delete(0,sb.length());
+                    if(!this.wordBank.contains(word)){
+                        StringBuilder reversedString = new StringBuilder(word).reverse();
+                        if(!this.wordBank.contains(reversedString.toString())) {
+                            return false;
+                            
+                        } else {
+                            return true;
+                        }
+                    } else {
+                        return true;
+                    }
+                    
+                }
+                else if(firstLetterCoordinate[1] < secondLetterCoordinate[1]){
+                    length = secondLetterCoordinate[1] - firstLetterCoordinate[1];
+                    for(i = 0; i <= length; i++){
+                        sb.append(this.board[(int)secondLetterCoordinate[0]][(int)secondLetterCoordinate[1]-i]);
+                    }
+                    word = sb.toString();
+                    sb.delete(0,sb.length());
+                    if(!this.wordBank.contains(word)){
+                        StringBuilder reversedString = new StringBuilder(word).reverse();
+                        if(!this.wordBank.contains(reversedString.toString())) {
+                            return false;
+                            
+                        } else {
+                            return true;
+                        }
+                    } else {
+                        return true;
+                    }
+                }
+                break;
+            case "vertical":
+                if(firstLetterCoordinate[0] > secondLetterCoordinate[0]){
+                    length = firstLetterCoordinate[0]-secondLetterCoordinate[0];
+                    for(i = 0; i <= length; i++)
+                        sb.append(this.board[(int)firstLetterCoordinate[0] -i][(int)firstLetterCoordinate[1]]);
+                    word = sb.toString();
+                    sb.delete(0,sb.length());
+                    if(!this.wordBank.contains(word)){
+                        StringBuilder reversedString = new StringBuilder(word).reverse();
+                        if(!this.wordBank.contains(reversedString.toString())) {
+                            return false;
+                            
+                        } else {
+                            return true;
+                        }
+                    } else {
+                        return true;
+                    }
+                    
+                }
+                else if(firstLetterCoordinate[0] < secondLetterCoordinate[0]){
+                    length = secondLetterCoordinate[0] - firstLetterCoordinate[0];
+                    for(i = 0; i <= length; i++){
+                        sb.append(this.board[(int)secondLetterCoordinate[0]-i][(int)secondLetterCoordinate[1]]);
+                    }
+                    word = sb.toString();
+                    sb.delete(0,sb.length());
+                    if(!this.wordBank.contains(word)){
+                        StringBuilder reversedString = new StringBuilder(word).reverse();
+                        if(!this.wordBank.contains(reversedString.toString())) {
+                            return false;
+                            
+                        } else {
+                            return true;
+                        }
+                    } else {
+                        return true;
+                    }
+                }
+                break;
+            case "diagonal":
+            //if first letter is right
+            if(firstLetterCoordinate[1] > secondLetterCoordinate[1]){
+                //check if down
+                if(firstLetterCoordinate[0] > secondLetterCoordinate[0]) {
+                    int lengthX = firstLetterCoordinate[0]-secondLetterCoordinate[0];
+                    int lengthY = firstLetterCoordinate[1]-secondLetterCoordinate[1];
+                    i = 0;
+                    j = 0;
+                    while (i<lengthX+1 && j < lengthY+1) {
+                        sb.append(this.board[(int)firstLetterCoordinate[0]-i][(int)firstLetterCoordinate[1]-j]);
+                        i = i + 1;
+                        j = j + 1;
+                    }
+                    word = sb.toString();
+                    sb.delete(0,sb.length());
+                    if(!this.wordBank.contains(word)){
+                        StringBuilder reversedString = new StringBuilder(word).reverse();
+                        if(!this.wordBank.contains(reversedString.toString())) {
+                            return false;
+                            
+                        } else {
+                            return true;
+                        }
+                    } else {
+                        return true;
+                    }
+                } else if (firstLetterCoordinate[0] < secondLetterCoordinate[0]) {
+                    int lengthX = secondLetterCoordinate[0]-firstLetterCoordinate[0];
+                    int lengthY = firstLetterCoordinate[1]-secondLetterCoordinate[1];
+                    i = 0;
+                    j = 0;
+                    while (i<lengthX+1 && j < lengthY+1) {
+                        sb.append(this.board[(int)firstLetterCoordinate[0]+i][(int)firstLetterCoordinate[1]-j]);
+                        i = i + 1;
+                        j = j + 1;
+                    }
+                    word = sb.toString();
+                    sb.delete(0,sb.length());
+                    if(!this.wordBank.contains(word)){
+                        StringBuilder reversedString = new StringBuilder(word).reverse();
+                        if(!this.wordBank.contains(reversedString.toString())) {
+                            return false;
+                            
+                        } else {
+                            return true;
+                        }
+                    } else {
+                        return true;
+                    }
+                }
+                
+                
+            } else if(firstLetterCoordinate[1] < secondLetterCoordinate[1]){
+                //check if down
+                if(firstLetterCoordinate[0] < secondLetterCoordinate[0]) {
+                    int lengthX = secondLetterCoordinate[0]-firstLetterCoordinate[0];
+                    int lengthY = secondLetterCoordinate[1]-firstLetterCoordinate[1];
+                    i = 0;
+                    j = 0;
+                    while (i<lengthX+1 && j < lengthY+1) {
+                        sb.append(this.board[(int)secondLetterCoordinate[0]-i][(int)secondLetterCoordinate[1]-j]);
+                        i = i + 1;
+                        j = j + 1;
+                    }
+                    word = sb.toString();
+                    sb.delete(0,sb.length());
+                    if(!this.wordBank.contains(word)){
+                        StringBuilder reversedString = new StringBuilder(word).reverse();
+                        if(!this.wordBank.contains(reversedString.toString())) {
+                            return false;
+                            
+                        } else {
+                            return true;
+                        }
+                    } else {
+                        return true;
+                    }
+                } else if (firstLetterCoordinate[0] > secondLetterCoordinate[0]) {
+                    int lengthX = firstLetterCoordinate[0]-secondLetterCoordinate[0];
+                    int lengthY = secondLetterCoordinate[1]-firstLetterCoordinate[1];
+                    i = 0;
+                    j = 0;
+                    while (i<lengthX+1 && j < lengthY+1) {
+                        sb.append(this.board[(int)secondLetterCoordinate[0]+i][(int)secondLetterCoordinate[1]-j]);
+                        i = i + 1;
+                        j = j + 1;
+                    }
+                    word = sb.toString();
+                    sb.delete(0,sb.length());
+                    if(!this.wordBank.contains(word)){
+                        StringBuilder reversedString = new StringBuilder(word).reverse();
+                        if(!this.wordBank.contains(reversedString.toString())) {
+                            return false;
+                            
+                        } else {
+                            return true;
+                        }
+                    } else {
+                        return true;
+                    }
+                }
+                
+                
+            }
+            
+                break;
+        }
+        
+        return false;
+    }
+
+
+    public boolean checkHorizontal(int[] first, int[] last){
+	
+		if((first[1] != last[1])&&(first[0] == last[0]))
+			return true;
+		return false;
+	}
+	
+	public boolean checkVertical(int[] first, int[] last){
+	
+		if((first[1] == last[1])&&(first[0] != last[0]))
+			return true;
+		return false;
+	}
+	
+	public boolean checkDiagonal(int[] first, int[] last){
+	
+		if(first[0] == last[0] || first[1] == last[1])
+			return false;
+
+		if(Math.abs(((last[1]-first[1]))/((last[0]-first[0])))==1)
+			return true;
+		return false;
+	}
 }

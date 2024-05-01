@@ -16,7 +16,8 @@ import java.util.List;
 //            http://www.freeutils.net/source/jlhttp/
 
 public class HttpServer {
-
+    private Board board;
+    private Board board2;
     private static final String HTML = "./html";
     int port = 8080;
     String dirname = HTML;
@@ -24,6 +25,8 @@ public class HttpServer {
     public HttpServer(int portNum, String dirName) {
         port = portNum;
         dirname = dirName;
+        this.board = new Board();
+        this.board2 = new Board();
     }
 
     public void start() {
@@ -32,7 +35,6 @@ public class HttpServer {
             if (!dir.canRead())
                 throw new FileNotFoundException(dir.getAbsolutePath());
 
-            Board board = new Board();
 
             // set up server
             HTTPServer server = new HTTPServer(port);
@@ -66,6 +68,28 @@ public class HttpServer {
                     String htmlWordBank = convertWordBankToHTML(placedWords);
                     resp.getHeaders().add("Content-Type", "text/html");
                     resp.send(200, htmlWordBank);
+                    return 0;
+                }
+            });
+
+             // Add a context handler for serving the word grid
+            host.addContext("/wordgrid2", new ContextHandler() {
+                public int serve(Request req, Response resp) throws IOException {
+                    char[][] grid2 = board2.getBoard();
+                    String htmlGrid2 = convertGridToHTML(grid2);
+                    resp.getHeaders().add("Content-Type", "text/html");
+                    resp.send(200, htmlGrid2);
+                    return 0;
+                }
+            });
+
+            // Define endpoint to serve word bank HTML
+            host.addContext("/wordbank2", new ContextHandler() {
+                public int serve(Request req, Response resp) throws IOException {
+                    List<String> placedWords2 = board2.getPlacedWords();
+                    String htmlWordBank2 = convertWordBankToHTML(placedWords2);
+                    resp.getHeaders().add("Content-Type", "text/html");
+                    resp.send(200, htmlWordBank2);
                     return 0;
                 }
             });
@@ -106,5 +130,9 @@ public class HttpServer {
     
         return html.toString();
       }
+
+    public Board getBoard() {
+        return board;
+    }
 
 }
