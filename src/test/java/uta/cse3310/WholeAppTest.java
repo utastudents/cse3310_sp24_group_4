@@ -23,6 +23,15 @@ A new player decides to join with the username 'strugglingCS' and joins Game 2.
 
 */
 
+/* 
+
+    This tests the following requirements:
+    1.2, 1.3, 1.8, 4.7
+
+    Other requirements are tested by the other test classes.
+
+*/
+
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;

@@ -1,5 +1,12 @@
 package uta.cse3310;
 
+/* 
+
+    This tests the following requirements:
+    2.1, 2.3, 3.3, 3.4, 3.5, 8
+
+*/
+
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
