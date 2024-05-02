@@ -67,6 +67,7 @@ public class WholeAppTest extends TestCase {
         // Player 2 is created here through different means since there is no actual connection happening to server
         assertTrue(L.checkUniqueName("Adam123"));
         Player p2 = new Player("Adam123", 2);
+        L.playerNames.add("Adam123");
         L.players.add(p2);
         assertNotNull(L.players);
         playerCount += 1;
@@ -82,8 +83,8 @@ public class WholeAppTest extends TestCase {
         L.leaderboard.updateScores(2, 600);
         L.leaderboard.updateLeaderboard(); // This should show both p1 and p2 with updated scores
 
-        assertEquals(300, p1.getPlayerId());
-        assertEquals(600, p2.getPlayerId());
+        assertEquals(300, p1.getScore());
+        assertEquals(600, p2.getScore());
 
         // Player 3 is created here through different means since there is no actual connection happening to server
         assertFalse(L.checkUniqueName("Adam123"));
@@ -112,15 +113,12 @@ public class WholeAppTest extends TestCase {
         L.leaderboard.updateScores(4, 1000);
         L.leaderboard.updateLeaderboard(); // This should show the current socres of all 4 players, with p3 and p4 having updated scores
 
-        assertEquals(100, p3.getPlayerId());
-        assertEquals(1000, p4.getPlayerId());
+        assertEquals(100, p3.getScore());
+        assertEquals(1000, p4.getScore());
 
-        for(Player p : L.players) {
-            if(p.getPlayerName() == "#1WS_gamer") {
-                L.players.remove(p);
-                playerCount -= 1;
-            }
-        }
+        // Player 3 decides to leave
+        L.players.remove(p3);
+        playerCount -= 1;
 
         L.displayLobby(); // This should have 3 players showing
 
@@ -138,16 +136,9 @@ public class WholeAppTest extends TestCase {
         assertEquals(4, playerCount);
 
         // Both p1 and p2 leave here
-        for(Player p : L.players) {
-            if(p.getPlayerName() == "JimmyJohns") {
-                L.players.remove(p);
-                playerCount -= 1;
-            }
-            if(p.getPlayerName() == "Adam123") {
-                L.players.remove(p);
-                playerCount -= 1;
-            }
-        }
+        L.players.remove(p1);
+        L.players.remove(p2);
+        playerCount -= 2;
 
         L.displayLobby(); // This should have 2 players showing
         L.leaderboard.updateLeaderboard(); // This should have 2 players and p5 has 0 points
