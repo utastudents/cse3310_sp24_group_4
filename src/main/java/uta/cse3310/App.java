@@ -175,7 +175,6 @@ public class App extends WebSocketServer {
     numOfPlayers -= 1;
     for(Player p : lob.players) {
       if(p.getPlayerId() == connectionId) {
-        lob.playerNames.remove(p.getPlayerName());
         lob.players.remove(p);
         System.out.println(p.playerName + " left");
         sendPlayerlist();
