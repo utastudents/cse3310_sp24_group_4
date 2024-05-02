@@ -8,7 +8,7 @@ import com.google.gson.JsonObject;
 public class Messaging {
     private String[] msgHistory;
     public String msg;
-    private String[] filter = {"test1", "test2"};
+    private String[] filter = {"test1", "test2", "fuck", "bitch", "ass"};
     private App webSocketServer;
 
     public Messaging(App webSocketServer) {
