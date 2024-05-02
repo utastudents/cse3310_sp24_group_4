@@ -173,6 +173,14 @@ public class App extends WebSocketServer {
   public void onClose(WebSocket conn, int code, String reason, boolean remote) {
     System.out.println(conn + " has closed");
     numOfPlayers -= 1;
+    for(Player p : lob.players) {
+      if(p.getPlayerId() == connectionId) {
+        lob.players.remove(p);
+        System.out.println(p.playerName + " left");
+        sendPlayerlist();
+        sendLeaderboard();
+      }
+    }
     // Retrieve the game tied to the websocket connection
     Lobby lob = conn.getAttachment();
     lob = null;
