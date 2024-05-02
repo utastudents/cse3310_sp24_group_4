@@ -144,6 +144,7 @@ public class App extends WebSocketServer {
     // it stores a pointer to G, and will give that pointer back to us
     // when we ask for it
     conn.setAttachment(lob);
+    conn.setAttachment(connectionId);
 
     Gson gson = new Gson();
 
@@ -171,10 +172,12 @@ public class App extends WebSocketServer {
 
   @Override
   public void onClose(WebSocket conn, int code, String reason, boolean remote) {
+    int connectionIdLeft = conn.getAttachment();
     System.out.println(conn + " has closed");
+    System.out.println("Connection with ID: " + connectionIdLeft + " has closed connection");
     numOfPlayers -= 1;
     for(Player p : lob.players) {
-      if(p.getPlayerId() == connectionId) {
+      if(p.getPlayerId() == connectionIdLeft) {
         lob.players.remove(p);
         System.out.println(p.playerName + " left");
         sendPlayerlist();
